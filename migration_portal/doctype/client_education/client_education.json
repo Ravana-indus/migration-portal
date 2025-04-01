@@ -1,0 +1,33 @@
+{
+ "doctype": "DocType",
+ "name": "Client Education",
+ "module": "Migration Portal",
+ "istable": 1,
+ "fields": [
+  {
+   "fieldname": "degree",
+   "fieldtype": "Data",
+   "label": "Degree/Qualification",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "institution",
+   "fieldtype": "Data",
+   "label": "Institution",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "year_completed",
+   "fieldtype": "Int",
+   "label": "Year Completed",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "field_of_study",
+   "fieldtype": "Data",
+   "label": "Field of Study"
+  }
+ ]
+} 

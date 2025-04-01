@@ -1,0 +1,62 @@
+{
+ "doctype": "DocType",
+ "name": "Communication Log",
+ "module": "Migration Portal",
+ "engine": "InnoDB",
+ "istable": 1, 
+ "fields": [
+  {
+   "fieldname": "communication_date",
+   "fieldtype": "Datetime",
+   "label": "Date/Time",
+   "default": "Now",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "communication_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Email\nPhone Call\nMeeting\nSMS\nPortal Message\nOther",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject/Topic",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "content",
+   "fieldtype": "Text Editor",
+   "label": "Details/Content"
+  },
+  {
+   "fieldname": "direction",
+   "fieldtype": "Select",
+   "label": "Direction",
+   "options": "Outgoing\nIncoming",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User Involved",
+   "options": "User",
+   "default": "__user"
+  },
+   {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype"
+  }
+ ]
+} 

@@ -1,0 +1,115 @@
+{
+  "doctype": "DocType",
+  "name": "Playbook Step",
+  "engine": "InnoDB",
+  "istable": 1,
+  "module": "Migration Portal",
+  "fields": [
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "label": "Title",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "description",
+      "fieldtype": "Text",
+      "label": "Description"
+    },
+    {
+      "fieldname": "step_type",
+      "fieldtype": "Select",
+      "label": "Step Type",
+      "options": "Study\nWork\nVisa\nDocumentation\nInterview\nMedical\nPayment\nOther",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "sequence",
+      "fieldtype": "Int",
+      "label": "Sequence",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Pending\nIn Progress\nCompleted\nDelayed\nCancelled\nNot Applicable",
+      "default": "Pending",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "due_date",
+      "fieldtype": "Date",
+      "label": "Due Date",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "completion_date",
+      "fieldtype": "Date",
+      "label": "Completion Date",
+      "read_only": 1, # Set by script based on status
+      "depends_on": "eval:doc.status=='Completed'"
+    },
+    {
+      "fieldname": "assigned_to",
+      "fieldtype": "Link",
+      "label": "Assigned To",
+      "options": "User"
+    },
+    {
+      "fieldname": "remind_before_days",
+      "fieldtype": "Int",
+      "label": "Remind Before (Days)",
+      "default": 2
+    },
+    {
+      "fieldname": "notes_section",
+      "fieldtype": "Section Break",
+      "label": "Notes"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    },
+    {
+      "fieldname": "document_section",
+      "fieldtype": "Section Break",
+      "label": "Document Requirements"
+    },
+    {
+      "fieldname": "documents_required",
+      "fieldtype": "Table",
+      "label": "Documents Required",
+      "options": "Playbook Step Document"
+    }
+    // Hidden parent reference fields removed as they are not typically needed for basic child tables
+    // {
+    //   "fieldname": "parent_reference_section",
+    //   "fieldtype": "Section Break",
+    //   "label": "References",
+    //   "hidden": 1
+    // },
+    // {
+    //   "fieldname": "parent_reference_type",
+    //   "fieldtype": "Link",
+    //   "label": "Parent Reference Type",
+    //   "options": "DocType",
+    //   "hidden": 1
+    // },
+    // {
+    //   "fieldname": "parent_reference_name",
+    //   "fieldtype": "Dynamic Link",
+    //   "label": "Parent Reference Name",
+    //   "options": "parent_reference_type",
+    //   "hidden": 1
+    // }
+  ]
+} 

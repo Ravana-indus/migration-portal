@@ -1,9 +1,9 @@
 app_name = "migration_portal"
 app_title = "Migration Portal"
 app_publisher = "RavanOS"
-app_description = "Flyout App"
-app_email = "Kichukapp@gmail.com"
-app_license = "mit"
+app_description = "Migration Services Portal with FlyOut Integration"
+app_email = "info@example.com"
+app_license = "MIT"
 
 # Apps
 # ------------------
@@ -25,8 +25,8 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/migration_portal/css/migration_portal.css"
-# app_include_js = "/assets/migration_portal/js/migration_portal.js"
+app_include_css = "/assets/migration_portal/css/migration_portal.css"
+app_include_js = "/assets/migration_portal/js/migration_portal.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/migration_portal/css/migration_portal.css"
@@ -130,20 +130,34 @@ app_license = "mit"
 # Override standard doctype classes
 
 # override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
+# 	"ToDo": "migration_portal.overrides.CustomToDo"
 # }
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Inquiry": {
+		# Trigger sync on save/update if source is FlyOut
+		"on_update": "migration_portal.migration_portal.doctype.inquiry.inquiry.trigger_flyout_sync", 
+		# "validate": "path.to.validate.method",
+		# "on_submit": "path.to.submit.method",
+		# "on_cancel": "path.to.cancel.method",
+	},
+	"Client": {
+		# Add hooks if Client needs to sync with FlyOut or other systems
+		# "on_update": "path.to.client.update.hook", 
+	},
+    "FlyOut Account Settings": {
+        "on_update": "migration_portal.migration_portal.doctype.flyout_account_settings.flyout_account_settings.update_sync_status_on_save"
+    }
+	# Add other DocType events as needed
+	# "Migration Payment": {
+    # "on_submit": "migration_portal.migration_portal.doctype.migration_payment.migration_payment.on_submit",
+    # "on_cancel": "migration_portal.migration_portal.doctype.migration_payment.migration_payment.on_cancel"
+    # },
+}
 
 # Scheduled Tasks
 # ---------------
@@ -241,4 +255,24 @@ app_license = "mit"
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
+
+# Fixtures
+# --------
+export_fixtures = [
+   {
+    "doctype": "Migration Service"
+   },
+   {
+    "doctype": "Workspace",
+    "filters": {
+     "name": "Migration Portal"
+    }
+   },
+   {
+    "doctype": "Workflow",
+    "filters": {
+     "name": ["in", ["Inquiry Process", "Client Process"]]
+    }
+   }
+]
 

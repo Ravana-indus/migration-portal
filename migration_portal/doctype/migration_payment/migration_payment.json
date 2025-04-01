@@ -1,0 +1,200 @@
+{
+  "doctype": "DocType",
+  "name": "Migration Payment",
+  "engine": "InnoDB",
+  "module": "Migration Portal",
+  "naming_rule": "Expression",
+  "autoname": "format:PAY-{######}",
+  "is_submittable": 1,
+  "show_title_field_in_link": 0,
+  "search_fields": "reference_type,reference_name,payment_status",
+  "fields": [
+    {
+      "fieldname": "reference_section",
+      "fieldtype": "Section Break",
+      "label": "Reference"
+    },
+    {
+      "fieldname": "reference_type",
+      "fieldtype": "Select",
+      "label": "Reference Type",
+      "options": "Client\nInquiry",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "reference_name",
+      "fieldtype": "Dynamic Link",
+      "label": "Reference Name",
+      "options": "reference_type",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "payment_entry",
+      "fieldtype": "Link",
+      "label": "Payment Entry",
+      "options": "Payment Entry",
+      "description": "Link to ERPNext Payment Entry if available"
+    },
+    {
+      "fieldname": "payment_details_section",
+      "fieldtype": "Section Break",
+      "label": "Payment Details"
+    },
+    {
+      "fieldname": "payment_date",
+      "fieldtype": "Date",
+      "label": "Payment Date",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "amount",
+      "fieldtype": "Currency",
+      "label": "Amount",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "currency",
+      "fieldtype": "Link",
+      "label": "Currency",
+      "options": "Currency",
+      "reqd": 1,
+      "default": "USD" # Consider fetching default from company settings
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "payment_type",
+      "fieldtype": "Select",
+      "label": "Payment Type",
+      "options": "Initial Fee\nApplication Fee\nService Fee\nDocument Fee\nVisa Fee\nOther",
+      "reqd": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "payment_method",
+      "fieldtype": "Select",
+      "label": "Payment Method",
+      "options": "Bank Transfer\nCredit Card\nCash\nCheque\nOnline Payment\nOther",
+      "reqd": 1
+    },
+    {
+      "fieldname": "payment_status",
+      "fieldtype": "Select",
+      "label": "Payment Status",
+      "options": "Pending\nPartial\nPaid\nRefunded\nCancelled",
+      "default": "Pending",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "transaction_details_section",
+      "fieldtype": "Section Break",
+      "label": "Transaction Details"
+    },
+    {
+      "fieldname": "transaction_id",
+      "fieldtype": "Data",
+      "label": "Transaction ID"
+    },
+    {
+      "fieldname": "bank_name",
+      "fieldtype": "Data",
+      "label": "Bank Name",
+      "depends_on": "eval:doc.payment_method=='Bank Transfer' || doc.payment_method=='Cheque'"
+    },
+    {
+      "fieldname": "cheque_number",
+      "fieldtype": "Data",
+      "label": "Cheque Number",
+      "depends_on": "eval:doc.payment_method=='Cheque'"
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "receipt_number",
+      "fieldtype": "Data",
+      "label": "Receipt Number"
+    },
+    {
+      "fieldname": "receipt_date",
+      "fieldtype": "Date",
+      "label": "Receipt Date"
+    },
+    {
+      "fieldname": "notes_section",
+      "fieldtype": "Section Break",
+      "label": "Notes"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    },
+    {
+      "fieldname": "attachments_section",
+      "fieldtype": "Section Break",
+      "label": "Attachments"
+    },
+    {
+      "fieldname": "payment_proof",
+      "fieldtype": "Attach",
+      "label": "Payment Proof"
+    },
+    {
+      "fieldname": "receipt_attachment",
+      "fieldtype": "Attach",
+      "label": "Receipt"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Migration Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1,
+      "set_user_permissions": 1
+    },
+    {
+      "role": "Finance Manager", # Assuming Finance role exists
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1
+    },
+    {
+      "role": "Migration Consultant",
+      "read": 1,
+      "write": 0,
+      "create": 0,
+      "submit": 0
+    },
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1,
+      "set_user_permissions": 1
+    }
+  ]
+} 
