@@ -1,0 +1,68 @@
+{
+  "doctype": "DocType",
+  "name": "Inquiry Work Option",
+  "engine": "InnoDB",
+  "module": "Migration Portal",
+  "istable": 1,
+  "fields": [
+    {
+      "fieldname": "job_title",
+      "fieldtype": "Data",
+      "label": "Job Title",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "company_name",
+      "fieldtype": "Data",
+      "label": "Company Name",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "industry",
+      "fieldtype": "Data",
+      "label": "Industry",
+      "reqd": 1,
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "country",
+      "fieldtype": "Link",
+      "label": "Country",
+      "options": "Country",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "expected_salary",
+      "fieldtype": "Currency",
+      "label": "Expected Salary"
+    },
+    {
+      "fieldname": "salary_period",
+      "fieldtype": "Select",
+      "label": "Salary Period",
+      "options": "Per Year\nPer Month\nPer Week\nPer Hour"
+    },
+    {
+      "fieldname": "contract_type",
+      "fieldtype": "Select",
+      "label": "Contract Type",
+      "options": "Full-time\nPart-time\nContract\nTemporary\nInternship"
+    },
+    {
+      "fieldname": "notes",
+      "fieldtype": "Small Text",
+      "label": "Notes"
+    },
+    {
+      "fieldname": "work_option",
+      "fieldtype": "Link",
+      "label": "Reference Work Option",
+      "options": "Work Option"
+    }
+  ]
+} 

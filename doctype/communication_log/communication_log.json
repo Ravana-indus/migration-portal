@@ -1,0 +1,80 @@
+{
+ "doctype": "DocType",
+ "name": "Communication Log",
+ "module": "Migration Portal",
+ "engine": "InnoDB",
+ "naming_rule": "Expression",
+ "autoname": "COMM-LOG-.#####",
+ "track_changes": 1,
+ "fields": [
+  {
+   "fieldname": "communication_date",
+   "fieldtype": "Datetime",
+   "label": "Date/Time",
+   "default": "Now",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "communication_type",
+   "fieldtype": "Select",
+   "label": "Type",
+   "options": "Email\nPhone Call\nMeeting\nSMS\nPortal Message\nOther",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject/Topic",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "content",
+   "fieldtype": "Text Editor",
+   "label": "Details/Content"
+  },
+  {
+   "fieldname": "direction",
+   "fieldtype": "Select",
+   "label": "Direction",
+   "options": "Outgoing\nIncoming",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User Involved",
+   "options": "User",
+   "default": "__user"
+  }
+ ],
+ "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1, "write": 1, "create": 1, "delete": 1
+    },
+    {
+      "role": "Migration Manager",
+      "read": 1, "write": 1, "create": 1, "delete": 1
+    },
+     {
+      "role": "Migration Consultant",
+      "read": 1, "write": 1, "create": 1
+    }
+  ]
+} 

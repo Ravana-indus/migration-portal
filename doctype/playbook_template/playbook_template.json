@@ -1,0 +1,61 @@
+{
+ "doctype": "DocType",
+ "name": "Playbook Template",
+ "module": "Migration Portal",
+ "engine": "InnoDB",
+ "issingle": 0,
+ "show_title_field_in_link": 1,
+ "title_field": "title",
+ "naming_rule": "By fieldname",
+ "autoname": "field:title", 
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "applicable_service_type",
+   "fieldtype": "Select",
+   "label": "Applicable Service Type",
+   "options": "Study\nWork\nVisit\nResidence\nCitizenship\nOther",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Sequence",
+   "description": "Order in which this step appears in the playbook.",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "step_type",
+   "fieldtype": "Select",
+   "label": "Step Type Category",
+   "options": "Study\nWork\nVisa\nDocumentation\nInterview\nMedical\nPayment\nOther",
+   "description": "General category of the step.",
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1, "write": 1, "create": 1, "delete": 1
+  },
+  {
+   "role": "Migration Manager",
+   "read": 1, "write": 1, "create": 1, "delete": 1
+  }
+ ]
+} 

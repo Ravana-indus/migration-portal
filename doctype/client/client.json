@@ -1,0 +1,404 @@
+{
+  "doctype": "DocType",
+  "name": "Client",
+  "engine": "InnoDB",
+  "module": "Migration Portal",
+  "naming_rule": "Expression",
+  "autoname": "format:CLT-{######}",
+  "is_submittable": 1,
+  "show_title_field_in_link": 1,
+  "title_field": "client_name",
+  "search_fields": "client_name,email,phone,passport_number",
+  "timeline_field": "name",
+  "track_changes": 1,
+  "track_seen": 1,
+  "fields": [
+    {
+      "fieldname": "linked_inquiry",
+      "fieldtype": "Link",
+      "label": "Linked Inquiry",
+      "options": "Inquiry",
+      "reqd": 1,
+      "in_list_view": 1,
+      "read_only": 1
+    },
+    {
+      "fieldname": "client_name",
+      "fieldtype": "Data",
+      "label": "Client Name",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Active\nIn Progress\nCompleted\nCancelled",
+      "default": "Active",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "personal_tab",
+      "fieldtype": "Tab Break",
+      "label": "Personal Information"
+    },
+    {
+      "fieldname": "personal_section",
+      "fieldtype": "Section Break",
+      "label": "Basic Details"
+    },
+    {
+      "fieldname": "email",
+      "fieldtype": "Data",
+      "label": "Email",
+      "options": "Email",
+      "reqd": 1
+    },
+    {
+      "fieldname": "phone",
+      "fieldtype": "Data",
+      "label": "Phone",
+      "options": "Phone",
+      "reqd": 1
+    },
+    {
+      "fieldname": "date_of_birth",
+      "fieldtype": "Date",
+      "label": "Date of Birth",
+      "reqd": 0
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "nationality",
+      "fieldtype": "Link",
+      "label": "Nationality",
+      "options": "Country",
+      "reqd": 0
+    },
+    {
+      "fieldname": "passport_number",
+      "fieldtype": "Data",
+      "label": "Passport Number",
+      "reqd": 0
+    },
+    {
+      "fieldname": "passport_expiry",
+      "fieldtype": "Date",
+      "label": "Passport Expiry Date",
+      "reqd": 0
+    },
+    {
+      "fieldname": "address_section",
+      "fieldtype": "Section Break",
+      "label": "Address Information"
+    },
+    {
+      "fieldname": "address_line1",
+      "fieldtype": "Data",
+      "label": "Address Line 1",
+      "reqd": 0
+    },
+    {
+      "fieldname": "address_line2",
+      "fieldtype": "Data",
+      "label": "Address Line 2"
+    },
+    {
+      "fieldname": "city",
+      "fieldtype": "Data",
+      "label": "City",
+      "reqd": 0
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "state",
+      "fieldtype": "Data",
+      "label": "State/Province",
+      "reqd": 0
+    },
+    {
+      "fieldname": "postal_code",
+      "fieldtype": "Data",
+      "label": "Postal Code",
+      "reqd": 0
+    },
+    {
+      "fieldname": "country",
+      "fieldtype": "Link",
+      "label": "Country",
+      "options": "Country",
+      "reqd": 0
+    },
+    {
+      "fieldname": "education_section",
+      "fieldtype": "Section Break",
+      "label": "Education & Experience"
+    },
+    {
+      "fieldname": "education",
+      "fieldtype": "Table",
+      "label": "Education",
+      "options": "Client Education"
+    },
+    {
+      "fieldname": "column_break_3",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "work_experience",
+      "fieldtype": "Table",
+      "label": "Work Experience",
+      "options": "Client Work Experience"
+    },
+    {
+      "fieldname": "dependents_section",
+      "fieldtype": "Section Break",
+      "label": "Dependents"
+    },
+    {
+      "fieldname": "dependents",
+      "fieldtype": "Table",
+      "label": "Dependents",
+      "options": "Client Dependent"
+    },
+    {
+      "fieldname": "internal_tab",
+      "fieldtype": "Tab Break",
+      "label": "Internal Management"
+    },
+    {
+      "fieldname": "assignments_section",
+      "fieldtype": "Section Break",
+      "label": "Assignments"
+    },
+    {
+      "fieldname": "primary_consultant",
+      "fieldtype": "Link",
+      "label": "Primary Consultant",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "visa_specialist",
+      "fieldtype": "Link",
+      "label": "Visa Specialist",
+      "options": "User"
+    },
+    {
+      "fieldname": "documentation_specialist",
+      "fieldtype": "Link",
+      "label": "Documentation Specialist",
+      "options": "User"
+    },
+    {
+      "fieldname": "column_break_4",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "priority",
+      "fieldtype": "Select",
+      "label": "Priority",
+      "options": "Low\nMedium\nHigh\nUrgent",
+      "default": "Medium"
+    },
+    {
+      "fieldname": "next_followup_date",
+      "fieldtype": "Date",
+      "label": "Next Follow-up Date"
+    },
+    {
+      "fieldname": "internal_notes",
+      "fieldtype": "Text Editor",
+      "label": "Internal Notes"
+    },
+    {
+      "fieldname": "application_tab",
+      "fieldtype": "Tab Break",
+      "label": "Application Process"
+    },
+    {
+      "fieldname": "service_section",
+      "fieldtype": "Section Break",
+      "label": "Service Details"
+    },
+    {
+      "fieldname": "service_type",
+      "fieldtype": "Select",
+      "label": "Service Type",
+      "options": "Study\nWork\nVisit\nResidence\nCitizenship\nOther",
+      "reqd": 1
+    },
+    {
+      "fieldname": "destination_country",
+      "fieldtype": "Link",
+      "label": "Destination Country",
+      "options": "Country",
+      "reqd": 1
+    },
+    {
+      "fieldname": "expected_completion",
+      "fieldtype": "Date",
+      "label": "Expected Completion"
+    },
+    {
+      "fieldname": "column_break_5",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "service_details",
+      "fieldtype": "Small Text",
+      "label": "Service Details"
+    },
+    {
+      "fieldname": "playbook_section",
+      "fieldtype": "Section Break",
+      "label": "Playbook Steps"
+    },
+    {
+      "fieldname": "playbook_steps",
+      "fieldtype": "Table",
+      "label": "Playbook Steps",
+      "options": "Playbook Step"
+    },
+    {
+      "fieldname": "timeline_section",
+      "fieldtype": "Section Break",
+      "label": "Timeline & Milestones"
+    },
+    {
+      "fieldname": "milestones",
+      "fieldtype": "Table",
+      "label": "Milestones",
+      "options": "Client Milestone"
+    },
+    {
+      "fieldname": "documents_tab",
+      "fieldtype": "Tab Break",
+      "label": "Documents"
+    },
+    {
+      "fieldname": "required_documents_section",
+      "fieldtype": "Section Break",
+      "label": "Required Documents"
+    },
+    {
+      "fieldname": "required_documents",
+      "fieldtype": "Table",
+      "label": "Required Documents",
+      "options": "Client Document"
+    },
+    {
+      "fieldname": "submitted_documents_section",
+      "fieldtype": "Section Break",
+      "label": "Submitted Documents"
+    },
+    {
+      "fieldname": "submitted_documents",
+      "fieldtype": "Table",
+      "label": "Submitted Documents",
+      "options": "Client Submitted Document"
+    },
+    {
+      "fieldname": "attachments_section",
+      "fieldtype": "Section Break",
+      "label": "Other Attachments"
+    },
+    {
+      "fieldname": "attachments",
+      "fieldtype": "Table",
+      "label": "Attachments",
+      "options": "Client Attachment"
+    },
+    {
+      "fieldname": "financial_tab",
+      "fieldtype": "Tab Break",
+      "label": "Financial"
+    },
+    {
+      "fieldname": "agreements_section",
+      "fieldtype": "Section Break",
+      "label": "Agreements"
+    },
+    {
+      "fieldname": "agreements",
+      "fieldtype": "Table",
+      "label": "Agreements",
+      "options": "Client Agreement"
+    },
+    {
+      "fieldname": "payment_section",
+      "fieldtype": "Section Break",
+      "label": "Payments"
+    },
+    {
+      "fieldname": "payments",
+      "fieldtype": "Table",
+      "label": "Payments",
+      "options": "Migration Payment Reference"
+    },
+    {
+      "fieldname": "invoice_section",
+      "fieldtype": "Section Break",
+      "label": "Invoices"
+    },
+    {
+      "fieldname": "invoices",
+      "fieldtype": "Table",
+      "label": "Invoices",
+      "options": "Client Invoice Reference"
+    },
+    {
+      "fieldname": "communication_tab",
+      "fieldtype": "Tab Break",
+      "label": "Communication"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "Migration Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1,
+      "set_user_permissions": 1
+    },
+    {
+      "role": "Migration Consultant",
+      "read": 1,
+      "write": 1,
+      "create": 0,
+      "submit": 1,
+      "set_user_permissions": 1
+    },
+    {
+      "role": "Documentation Specialist",
+      "read": 1,
+      "write": 1,
+      "create": 0,
+      "submit": 0
+    },
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "submit": 1,
+      "cancel": 1,
+      "amend": 1,
+      "set_user_permissions": 1
+    }
+  ]
+} 

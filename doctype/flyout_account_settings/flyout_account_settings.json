@@ -1,0 +1,194 @@
+{
+  "doctype": "DocType",
+  "name": "FlyOut Account Settings",
+  "engine": "InnoDB",
+  "module": "Migration Portal",
+  "naming_rule": "Expression",
+  "autoname": "format:FLYOUT-SETTINGS",
+  "is_single": 1,
+  "fields": [
+    {
+      "fieldname": "account_section",
+      "fieldtype": "Section Break",
+      "label": "Account Information"
+    },
+    {
+      "fieldname": "provider_name",
+      "fieldtype": "Data",
+      "label": "Provider Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "provider_id",
+      "fieldtype": "Data",
+      "label": "Provider ID",
+      "reqd": 0,
+      "read_only": 1
+    },
+    {
+      "fieldname": "provider_tier",
+      "fieldtype": "Select",
+      "label": "Provider Tier",
+      "options": "Free\nStandard\nPremium\nEnterprise",
+      "default": "Free",
+      "reqd": 0,
+      "read_only": 1
+    },
+    {
+      "fieldname": "subscription_start",
+      "fieldtype": "Date",
+      "label": "Subscription Start Date",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "subscription_end",
+      "fieldtype": "Date",
+      "label": "Subscription End Date",
+      "read_only": 1
+    },
+    {
+      "fieldname": "account_status",
+      "fieldtype": "Select",
+      "label": "Account Status",
+      "options": "Active\nSuspended\nCancelled",
+      "default": "Active",
+      "reqd": 0,
+      "read_only": 1
+    },
+    {
+      "fieldname": "flyout_manager",
+      "fieldtype": "Data",
+      "label": "FlyOut Account Manager",
+      "read_only": 1
+    },
+    {
+      "fieldname": "api_section",
+      "fieldtype": "Section Break",
+      "label": "API Configuration"
+    },
+    {
+      "fieldname": "enable_sync",
+      "fieldtype": "Check",
+      "label": "Enable Synchronization",
+      "default": 0
+    },
+    {
+      "fieldname": "flyout_base_url",
+      "fieldtype": "Data",
+      "label": "FlyOut Base URL",
+      "reqd": 1,
+      "default": "https://flyapi.ravanaos.com"
+    },
+    {
+      "fieldname": "api_key",
+      "fieldtype": "Password",
+      "label": "API Key",
+      "reqd": 1
+    },
+    {
+      "fieldname": "webhook_secret",
+       "fieldtype": "Password",
+       "label": "Webhook Secret (Optional)",
+       "description": "Used to verify incoming webhook requests from FlyOut."
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "sync_frequency",
+      "fieldtype": "Select",
+      "label": "Sync Frequency",
+      "options": "Real-time\nHourly\nDaily\nWeekly",
+      "default": "Real-time",
+      "depends_on": "eval:doc.enable_sync==1"
+    },
+    {
+      "fieldname": "last_sync_datetime",
+      "fieldtype": "Datetime",
+      "label": "Last Sync",
+      "read_only": 1
+    },
+    {
+      "fieldname": "sync_status",
+      "fieldtype": "Select",
+      "label": "Sync Status",
+      "options": "Not Configured\nActive\nError\nPaused",
+      "default": "Not Configured",
+      "read_only": 1
+    },
+    {
+       "fieldname": "allowed_webhook_ips",
+       "fieldtype": "Text",
+       "label": "Allowed Webhook IPs (Optional)",
+       "description": "If FlyOut uses static IPs, list one per line to verify webhook source."
+    },
+    {
+      "fieldname": "public_profile_section",
+      "fieldtype": "Section Break",
+      "label": "Public Profile (Displayed on FlyOut)"
+    },
+    {
+      "fieldname": "company_description",
+      "fieldtype": "Text Editor",
+      "label": "Company Description"
+    },
+    {
+      "fieldname": "services_offered",
+      "fieldtype": "Table MultiSelect",
+      "label": "Services Offered",
+      "options": "Migration Service"
+    },
+    {
+      "fieldname": "column_break_3",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "contact_email",
+      "fieldtype": "Data",
+      "label": "Public Contact Email",
+      "options": "Email"
+    },
+    {
+      "fieldname": "contact_phone",
+      "fieldtype": "Data",
+      "label": "Public Contact Phone",
+      "options": "Phone"
+    },
+    {
+      "fieldname": "company_logo",
+      "fieldtype": "Attach Image",
+      "label": "Company Logo"
+    },
+    {
+      "fieldname": "website",
+      "fieldtype": "Data",
+      "label": "Website",
+      "options": "URL"
+    },
+    {
+      "fieldname": "supported_languages",
+      "fieldtype": "Table MultiSelect",
+      "label": "Supported Languages",
+      "options": "Language"
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    },
+    {
+      "role": "Migration Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1
+    }
+  ]
+} 

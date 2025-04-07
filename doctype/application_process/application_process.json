@@ -1,0 +1,363 @@
+{
+    "doctype": "DocType",
+    "name": "Application Process",
+    "module": "Migration Portal",
+    "autoname": "format:{client_name}-{application_type}-{destination_country}-{year}",
+    "track_changes": 1,
+    "track_views": 1,
+    "search_fields": "client,application_type,destination_country,status",
+    "fields": [
+        {
+            "fieldname": "client",
+            "fieldtype": "Link",
+            "options": "Client",
+            "reqd": 1,
+            "in_list_view": 1,
+            "in_standard_filter": 1
+        },
+        {
+            "fieldname": "client_name",
+            "fieldtype": "Data",
+            "fetch_from": "client.client_name",
+            "read_only": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "application_type",
+            "fieldtype": "Select",
+            "options": "Study\nWork\nVisit\nResidence\nCitizenship\nOther",
+            "reqd": 1,
+            "in_list_view": 1,
+            "in_standard_filter": 1
+        },
+        {
+            "fieldname": "destination_country",
+            "fieldtype": "Link",
+            "options": "Country",
+            "reqd": 1,
+            "in_standard_filter": 1
+        },
+        {
+            "fieldname": "year",
+            "fieldtype": "Data",
+            "default": "2025",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "start_date",
+            "fieldtype": "Date",
+            "reqd": 1,
+            "default": "Today"
+        },
+        {
+            "fieldname": "expected_completion",
+            "fieldtype": "Date"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "options": "Not Started\nDocument Collection\nApplication Preparation\nApplication Submitted\nIn Process\nVisa Interview\nDecision Pending\nApproved\nRejected\nAppeal\nCancelled",
+            "default": "Not Started",
+            "reqd": 1,
+            "in_list_view": 1,
+            "in_standard_filter": 1
+        },
+        {
+            "fieldname": "primary_consultant",
+            "fieldtype": "Link",
+            "options": "User"
+        },
+        {
+            "fieldname": "document_collection_section",
+            "fieldtype": "Section Break",
+            "label": "Document Collection"
+        },
+        {
+            "fieldname": "document_collection_status",
+            "fieldtype": "Select",
+            "options": "Not Started\nIn Progress\nCompleted",
+            "default": "Not Started"
+        },
+        {
+            "fieldname": "document_checklist",
+            "fieldtype": "Table",
+            "options": "Application Document"
+        },
+        {
+            "fieldname": "application_preparation_section",
+            "fieldtype": "Section Break",
+            "label": "Application Preparation"
+        },
+        {
+            "fieldname": "application_prep_status",
+            "fieldtype": "Select",
+            "options": "Not Started\nIn Progress\nCompleted",
+            "default": "Not Started"
+        },
+        {
+            "fieldname": "application_forms_status",
+            "fieldtype": "Select",
+            "options": "Not Started\nDraft\nReview\nFinalized",
+            "default": "Not Started"
+        },
+        {
+            "fieldname": "statement_purpose_status",
+            "fieldtype": "Select",
+            "options": "Not Required\nNot Started\nDraft\nReview\nFinalized",
+            "default": "Not Started"
+        },
+        {
+            "fieldname": "resume_cv_status",
+            "fieldtype": "Select",
+            "options": "Not Required\nNot Started\nDraft\nReview\nFinalized",
+            "default": "Not Started"
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "financials_status",
+            "fieldtype": "Select",
+            "options": "Not Started\nIn Progress\nCompleted",
+            "default": "Not Started"
+        },
+        {
+            "fieldname": "application_fees_paid",
+            "fieldtype": "Check"
+        },
+        {
+            "fieldname": "application_fee_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.application_fees_paid==1"
+        },
+        {
+            "fieldname": "application_fee_amount",
+            "fieldtype": "Currency",
+            "depends_on": "eval:doc.application_fees_paid==1"
+        },
+        {
+            "fieldname": "application_submission_section",
+            "fieldtype": "Section Break",
+            "label": "Application Submission"
+        },
+        {
+            "fieldname": "submission_status",
+            "fieldtype": "Select",
+            "options": "Not Submitted\nPartially Submitted\nFully Submitted",
+            "default": "Not Submitted"
+        },
+        {
+            "fieldname": "submission_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.submission_status=='Fully Submitted'"
+        },
+        {
+            "fieldname": "application_reference",
+            "fieldtype": "Data"
+        },
+        {
+            "fieldname": "confirmation_received",
+            "fieldtype": "Check"
+        },
+        {
+            "fieldname": "confirmation_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.confirmation_received==1"
+        },
+        {
+            "fieldname": "column_break_3",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "estimated_processing_time",
+            "fieldtype": "Data",
+            "description": "e.g., 4-6 weeks, 3 months, etc."
+        },
+        {
+            "fieldname": "submission_notes",
+            "fieldtype": "Small Text"
+        },
+        {
+            "fieldname": "biometrics_interview_section",
+            "fieldtype": "Section Break",
+            "label": "Biometrics & Interview"
+        },
+        {
+            "fieldname": "biometrics_required",
+            "fieldtype": "Check",
+            "default": 1
+        },
+        {
+            "fieldname": "biometrics_appointment",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.biometrics_required==1"
+        },
+        {
+            "fieldname": "biometrics_completed",
+            "fieldtype": "Check",
+            "depends_on": "eval:doc.biometrics_required==1"
+        },
+        {
+            "fieldname": "column_break_4",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "interview_required",
+            "fieldtype": "Check",
+            "default": 0
+        },
+        {
+            "fieldname": "interview_date",
+            "fieldtype": "Datetime",
+            "depends_on": "eval:doc.interview_required==1"
+        },
+        {
+            "fieldname": "interview_completed",
+            "fieldtype": "Check",
+            "depends_on": "eval:doc.interview_required==1"
+        },
+        {
+            "fieldname": "interview_notes",
+            "fieldtype": "Small Text",
+            "depends_on": "eval:doc.interview_required==1"
+        },
+        {
+            "fieldname": "decision_section",
+            "fieldtype": "Section Break",
+            "label": "Decision"
+        },
+        {
+            "fieldname": "decision_received",
+            "fieldtype": "Check"
+        },
+        {
+            "fieldname": "decision_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.decision_received==1"
+        },
+        {
+            "fieldname": "decision",
+            "fieldtype": "Select",
+            "options": "Pending\nApproved\nRejected\nAdditional Documents Requested",
+            "default": "Pending",
+            "depends_on": "eval:doc.decision_received==1"
+        },
+        {
+            "fieldname": "column_break_6",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "visa_issued",
+            "fieldtype": "Check",
+            "depends_on": "eval:doc.decision=='Approved'"
+        },
+        {
+            "fieldname": "visa_issue_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.visa_issued==1"
+        },
+        {
+            "fieldname": "visa_validity",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.visa_issued==1"
+        },
+        {
+            "fieldname": "decision_notes",
+            "fieldtype": "Small Text"
+        },
+        {
+            "fieldname": "appeal_section",
+            "fieldtype": "Section Break",
+            "label": "Appeal Process"
+        },
+        {
+            "fieldname": "appeal_filed",
+            "fieldtype": "Check"
+        },
+        {
+            "fieldname": "appeal_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.appeal_filed==1"
+        },
+        {
+            "fieldname": "appeal_grounds",
+            "fieldtype": "Small Text",
+            "depends_on": "eval:doc.appeal_filed==1"
+        },
+        {
+            "fieldname": "column_break_7",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "appeal_decision_received",
+            "fieldtype": "Check",
+            "depends_on": "eval:doc.appeal_filed==1"
+        },
+        {
+            "fieldname": "appeal_decision_date",
+            "fieldtype": "Date",
+            "depends_on": "eval:doc.appeal_decision_received==1"
+        },
+        {
+            "fieldname": "appeal_decision",
+            "fieldtype": "Select",
+            "options": "Pending\nSuccessful\nUnsuccessful",
+            "default": "Pending",
+            "depends_on": "eval:doc.appeal_decision_received==1"
+        },
+        {
+            "fieldname": "appeal_notes",
+            "fieldtype": "Small Text"
+        },
+        {
+            "fieldname": "notes_attachments_section",
+            "fieldtype": "Section Break",
+            "label": "Notes and Attachments"
+        },
+        {
+            "fieldname": "process_notes",
+            "fieldtype": "Text Editor"
+        },
+        {
+            "fieldname": "column_break_8",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "attachments",
+            "fieldtype": "Table",
+            "options": "Application Attachment"
+        }
+    ],
+    "permissions": [
+        {
+            "role": "System Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1
+        },
+        {
+            "role": "Migration Manager",
+            "read": 1,
+            "write": 1,
+            "create": 1,
+            "delete": 1
+        },
+        {
+            "role": "Migration Consultant",
+            "read": 1,
+            "write": 1,
+            "create": 1
+        },
+        {
+            "role": "Documentation Specialist",
+            "read": 1,
+            "write": 1
+        }
+    ]
+}

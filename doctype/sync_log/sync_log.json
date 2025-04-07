@@ -1,0 +1,152 @@
+{
+  "doctype": "DocType",
+  "name": "Sync Log",
+  "engine": "InnoDB",
+  "module": "Migration Portal",
+  "naming_rule": "Expression",
+  "autoname": "format:SYNC-{#####}-{timestamp}",
+  "fields": [
+    {
+      "fieldname": "sync_datetime",
+      "fieldtype": "Datetime",
+      "label": "Sync Datetime",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "direction",
+      "fieldtype": "Select",
+      "label": "Direction",
+      "options": "Inbound\nOutbound",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "label": "Status",
+      "options": "Received\nAttempting\nSuccess\nError\nPartial Success",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "reference_section",
+      "fieldtype": "Section Break",
+      "label": "Reference"
+    },
+    {
+      "fieldname": "reference_doctype",
+      "fieldtype": "Link",
+      "label": "Reference DocType",
+      "options": "DocType",
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "reference_name",
+      "fieldtype": "Dynamic Link",
+      "label": "Reference Name",
+      "options": "reference_doctype",
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "flyout_reference_id",
+      "fieldtype": "Data",
+      "label": "FlyOut Reference ID"
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "endpoint",
+      "fieldtype": "Data",
+      "label": "Endpoint",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "method",
+      "fieldtype": "Select",
+      "label": "Method",
+      "options": "GET\nPOST\nPUT\nDELETE\nPATCH"
+    },
+    {
+      "fieldname": "details_section",
+      "fieldtype": "Section Break",
+      "label": "Details"
+    },
+    {
+      "fieldname": "request_data",
+      "fieldtype": "Code",
+      "label": "Request Data",
+      "options": "JSON"
+    },
+    {
+      "fieldname": "column_break_2",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "response_data",
+      "fieldtype": "Code",
+      "label": "Response Data",
+      "options": "JSON"
+    },
+    {
+      "fieldname": "error_section",
+      "fieldtype": "Section Break",
+      "label": "Error Details",
+      "depends_on": "eval:doc.status=='Error'"
+    },
+    {
+      "fieldname": "error_type",
+      "fieldtype": "Data",
+      "label": "Error Type"
+    },
+    {
+      "fieldname": "error_message",
+      "fieldtype": "Text",
+      "label": "Error Message"
+    },
+    {
+      "fieldname": "column_break_3",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "stack_trace",
+      "fieldtype": "Code",
+      "label": "Stack Trace",
+      "options": "Text"
+    },
+    {
+      "fieldname": "retry_count",
+      "fieldtype": "Int",
+      "label": "Retry Count",
+      "default": 0,
+      "read_only": 1
+    },
+    {
+      "fieldname": "retry_scheduled",
+      "fieldtype": "Check",
+      "label": "Retry Scheduled",
+      "read_only": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1, 
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "Migration Manager",
+      "read": 1,
+      "write": 0,
+      "create": 0,
+      "delete": 0
+    }
+  ]
+} 

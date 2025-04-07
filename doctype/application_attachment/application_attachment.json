@@ -1,0 +1,41 @@
+{
+    "doctype": "DocType",
+    "name": "Application Attachment",
+    "module": "Migration Portal",
+    "is_table": 1,
+    "fields": [
+        {
+            "fieldname": "attachment_type",
+            "fieldtype": "Select",
+            "options": "Application Form\nDecision Letter\nInterview Invitation\nReceipt\nCorrespondence\nAppeal Document\nOther",
+            "label": "Attachment Type",
+            "reqd": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "title",
+            "fieldtype": "Data",
+            "label": "Title",
+            "reqd": 1,
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "file",
+            "fieldtype": "Attach",
+            "label": "File",
+            "reqd": 1
+        },
+        {
+            "fieldname": "date",
+            "fieldtype": "Date",
+            "label": "Date",
+            "default": "Today",
+            "in_list_view": 1
+        },
+        {
+            "fieldname": "description",
+            "fieldtype": "Small Text",
+            "label": "Description"
+        }
+    ]
+}
