@@ -5,48 +5,53 @@ import frappe
 from frappe.model.document import Document
 
 class MigrationPayment(Document):
+	def validate(self):
+		# Ensure reference is set
+		if not self.reference_type or not self.reference_name:
+			frappe.throw("Reference Type and Reference Name are required.")
+		
+		# Validate amount
+		if self.amount <= 0:
+			frappe.throw("Payment Amount must be positive.")
+		
+		# Set default currency if not set (can also fetch from company settings)
+		if not self.currency:
+			self.currency = frappe.get_cached_value('Company', frappe.defaults.get_user_default("company"), "default_currency") or "USD"
+
+	def before_submit(self):
+		# Payment must be in 'Paid' status to be submitted
+		if self.payment_status != "Paid":
+			frappe.throw("Payment must be marked as 'Paid' before submitting.")
+
 	def on_submit(self):
-		# Update payment status in linked document
-		self.update_linked_document_payment_status(reverse=False)
+		# Actions after submitting a payment (e.g., update Client/Inquiry status or totals)
+		self.update_linked_document_payment_status()
 
 	def on_cancel(self):
-		# Reverse payment status update in linked document
-		self.update_linked_document_payment_status(reverse=True)
+		# Actions after cancelling a payment
+		self.payment_status = "Cancelled"
+		# Potentially reverse the status update on the linked document
+		# self.update_linked_document_payment_status(reverse=True)
+		pass
 
 	def update_linked_document_payment_status(self, reverse=False):
-		"""Updates the payment child table in the linked Client or Inquiry document."""
+		"""Placeholder function to update payment status/totals on the linked Client or Inquiry."""
 		if self.reference_type and self.reference_name:
-			party_doctype = self.reference_type
-			party_name = self.reference_name
-			child_table_field = "payments" # Fieldname in Client/Inquiry
-			child_doctype = "Migration Payment Reference" # Child DocType name
-			link_field = "payment" # Fieldname in the child table linking to this payment
-
 			try:
-				party_doc = frappe.get_doc(party_doctype, party_name)
+				linked_doc = frappe.get_doc(self.reference_type, self.reference_name)
+				# --- Add logic here to update payment summaries or status on Client/Inquiry --- 
+				# Example: Calculate total paid amount, check if fully paid, etc.
+				# if hasattr(linked_doc, "total_paid"): 
+				# 	 linked_doc.calculate_totals()
+				# 	 linked_doc.save()
 				
-				if not reverse: # On Submit
-					# Check if already linked
-					already_linked = any(d.get(link_field) == self.name for d in party_doc.get(child_table_field))
-					if not already_linked:
-						party_doc.append(child_table_field, {
-							link_field: self.name,
-							# Other fields (payment_date, amount, status) are fetched automatically
-						})
-						party_doc.save(ignore_permissions=True)
-						frappe.msgprint(f"Payment linked to {party_doctype} {party_name}")
-					# Log for potential further action (e.g., update overall payment status)
-					frappe.log_info(f"Payment {self.name} submitted. Linked to {party_doctype} {party_name}.", "Payment Linking Update")
-
-				else: # On Cancel
-					# Find and remove the link
-					updated_links = [d for d in party_doc.get(child_table_field) if d.get(link_field) != self.name]
-					if len(updated_links) < len(party_doc.get(child_table_field)):
-						party_doc.set(child_table_field, updated_links)
-						party_doc.save(ignore_permissions=True)
-						frappe.msgprint(f"Payment link removed from {party_doctype} {party_name}")
-					# Log for potential further action
-					frappe.log_info(f"Payment {self.name} cancelled. Link removed from {party_doctype} {party_name}.", "Payment Linking Update")
-
+				# Log the event instead of just printing
+				frappe.log_info(
+					f"Payment {self.name} {'cancelled' if reverse else 'submitted'}. "
+					f"Linked document {self.reference_type} {self.reference_name} status can be updated here.", 
+					"Payment Linking Update"
+				)
+				# Optional: Display message to user if needed
+				# frappe.msgprint(f"Linked document {self.reference_type} {self.reference_name} needs payment status update.")
 			except Exception as e:
-				frappe.log_error(f"Failed to update {party_doctype} {party_name} for payment {self.name}. Error: {e}") 
+				frappe.log_error(f"Failed to update linked document {self.reference_type} {self.reference_name} on payment {self.name} submit/cancel. Error: {e}") 

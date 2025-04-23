@@ -1,6 +1,6 @@
 {
   "doctype": "DocType",
-  "name": "Playbook Step",
+  "name": "Client Playbook Step",
   "engine": "InnoDB",
   "istable": 1,
   "module": "Migration Portal",
@@ -80,17 +80,6 @@
       "fieldname": "notes",
       "fieldtype": "Small Text",
       "label": "Notes"
-    },
-    {
-      "fieldname": "document_section",
-      "fieldtype": "Section Break",
-      "label": "Document Requirements"
-    },
-    {
-      "fieldname": "documents_required",
-      "fieldtype": "Table",
-      "label": "Documents Required",
-      "options": "Playbook Step Document"
     }
   ]
 } 

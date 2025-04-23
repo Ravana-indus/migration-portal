@@ -3,7 +3,6 @@
  "name": "Client Dependent",
  "module": "Migration Portal",
  "istable": 1,
- "engine": "InnoDB",
  "fields": [
   {
    "fieldname": "full_name",
@@ -14,9 +13,8 @@
   },
   {
    "fieldname": "relationship",
-   "fieldtype": "Select",
+   "fieldtype": "Data",
    "label": "Relationship",
-   "options": "Spouse\nChild\nParent\nSibling\nOther",
    "reqd": 1,
    "in_list_view": 1
   },
@@ -29,17 +27,6 @@
    "fieldname": "passport_number",
    "fieldtype": "Data",
    "label": "Passport Number"
-  },
-  {
-   "fieldname": "nationality",
-   "fieldtype": "Link",
-   "label": "Nationality",
-   "options": "Country"
-  },
-  {
-   "fieldname": "notes",
-   "fieldtype": "Small Text",
-   "label": "Notes"
   }
  ]
 } 

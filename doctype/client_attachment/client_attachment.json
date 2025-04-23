@@ -3,7 +3,6 @@
  "name": "Client Attachment",
  "module": "Migration Portal",
  "istable": 1,
- "engine": "InnoDB",
  "fields": [
   {
    "fieldname": "attachment",

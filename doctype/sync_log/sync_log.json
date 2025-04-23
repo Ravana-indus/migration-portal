@@ -3,8 +3,11 @@
   "name": "Sync Log",
   "engine": "InnoDB",
   "module": "Migration Portal",
-  "naming_rule": "Expression",
-  "autoname": "format:SYNC-{#####}-{timestamp}",
+  "naming_rule": "Expression", 
+  "autoname": "format:SYNC-{#####}-{timestamp}", 
+  "timeline_field": "sync_datetime",
+  "track_changes": 0,
+  "track_seen": 1,
   "fields": [
     {
       "fieldname": "sync_datetime",
@@ -12,7 +15,8 @@
       "label": "Sync Datetime",
       "reqd": 1,
       "in_list_view": 1,
-      "in_standard_filter": 1
+      "in_standard_filter": 1,
+      "read_only": 1
     },
     {
       "fieldname": "direction",
@@ -21,40 +25,46 @@
       "options": "Inbound\nOutbound",
       "reqd": 1,
       "in_list_view": 1,
-      "in_standard_filter": 1
+      "in_standard_filter": 1,
+      "read_only": 1
     },
     {
       "fieldname": "status",
       "fieldtype": "Select",
       "label": "Status",
-      "options": "Received\nAttempting\nSuccess\nError\nPartial Success",
+      "options": "Success\nError\nPartial Success",
       "reqd": 1,
       "in_list_view": 1,
-      "in_standard_filter": 1
+      "in_standard_filter": 1,
+      "read_only": 1
     },
     {
       "fieldname": "reference_section",
       "fieldtype": "Section Break",
-      "label": "Reference"
+      "label": "Reference",
+      "collapsible": 1
     },
     {
       "fieldname": "reference_doctype",
       "fieldtype": "Link",
       "label": "Reference DocType",
       "options": "DocType",
-      "in_standard_filter": 1
+      "in_standard_filter": 1,
+      "read_only": 1
     },
     {
       "fieldname": "reference_name",
       "fieldtype": "Dynamic Link",
       "label": "Reference Name",
       "options": "reference_doctype",
-      "in_standard_filter": 1
+      "in_standard_filter": 1,
+      "read_only": 1
     },
     {
       "fieldname": "flyout_reference_id",
       "fieldtype": "Data",
-      "label": "FlyOut Reference ID"
+      "label": "FlyOut Reference ID",
+      "read_only": 1
     },
     {
       "fieldname": "column_break_1",
@@ -64,24 +74,28 @@
       "fieldname": "endpoint",
       "fieldtype": "Data",
       "label": "Endpoint",
-      "in_list_view": 1
+      "in_list_view": 1,
+      "read_only": 1
     },
     {
       "fieldname": "method",
       "fieldtype": "Select",
       "label": "Method",
-      "options": "GET\nPOST\nPUT\nDELETE\nPATCH"
+      "options": "GET\nPOST\nPUT\nDELETE\nPATCH",
+      "read_only": 1
     },
     {
       "fieldname": "details_section",
       "fieldtype": "Section Break",
-      "label": "Details"
+      "label": "Details",
+      "collapsible": 1
     },
     {
       "fieldname": "request_data",
       "fieldtype": "Code",
       "label": "Request Data",
-      "options": "JSON"
+      "options": "JSON",
+      "read_only": 1
     },
     {
       "fieldname": "column_break_2",
@@ -91,33 +105,39 @@
       "fieldname": "response_data",
       "fieldtype": "Code",
       "label": "Response Data",
-      "options": "JSON"
+      "options": "JSON",
+      "read_only": 1
     },
     {
       "fieldname": "error_section",
       "fieldtype": "Section Break",
       "label": "Error Details",
-      "depends_on": "eval:doc.status=='Error'"
+      "depends_on": "eval:doc.status=='Error'",
+      "hidden": 1,
+      "collapsible": 1
     },
     {
       "fieldname": "error_type",
       "fieldtype": "Data",
-      "label": "Error Type"
+      "label": "Error Type",
+      "read_only": 1
     },
     {
       "fieldname": "error_message",
       "fieldtype": "Text",
-      "label": "Error Message"
+      "label": "Error Message",
+      "read_only": 1
     },
     {
-      "fieldname": "column_break_3",
+      "fieldname": "column_break_3", 
       "fieldtype": "Column Break"
     },
     {
       "fieldname": "stack_trace",
       "fieldtype": "Code",
       "label": "Stack Trace",
-      "options": "Text"
+      "options": "Text",
+      "read_only": 1
     },
     {
       "fieldname": "retry_count",
@@ -137,7 +157,7 @@
     {
       "role": "System Manager",
       "read": 1,
-      "write": 1, 
+      "write": 0,
       "create": 1,
       "delete": 1
     },

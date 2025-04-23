@@ -93,14 +93,12 @@
     {
       "fieldname": "start_date",
       "fieldtype": "Date",
-      "label": "Start Date",
-      "reqd": 1
+      "label": "Start Date"
     },
     {
       "fieldname": "application_deadline",
       "fieldtype": "Date",
-      "label": "Application Deadline",
-      "reqd": 1
+      "label": "Application Deadline"
     },
     {
       "fieldname": "financial_section",
@@ -142,7 +140,8 @@
       "fieldtype": "Select",
       "label": "Living Cost Period",
       "options": "Per Year\nPer Month\nPer Week\nTotal Program",
-      "depends_on": "eval:doc.estimated_living_cost"
+      "depends_on": "eval:doc.estimated_living_cost",
+      "hidden": 1
     },
     {
       "fieldname": "scholarship_available",
@@ -153,7 +152,8 @@
       "fieldname": "scholarship_details",
       "fieldtype": "Small Text",
       "label": "Scholarship Details",
-      "depends_on": "eval:doc.scholarship_available==1"
+      "depends_on": "eval:doc.scholarship_available==1",
+      "hidden": 1
     },
     {
       "fieldname": "requirements_section",

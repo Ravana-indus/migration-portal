@@ -1,7 +1,6 @@
 {
  "doctype": "DocType",
  "name": "Migration Service",
- "engine": "InnoDB",
  "module": "Migration Portal",
  "fields": [
   {
@@ -16,22 +15,6 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
-  }
- ],
- "permissions": [
-  {
-   "role": "System Manager",
-   "read": 1,
-   "write": 1,
-   "create": 1,
-   "delete": 1
-  },
-  {
-   "role": "Migration Manager",
-   "read": 1,
-   "write": 1,
-   "create": 1,
-   "delete": 1
   }
  ]
 } 

@@ -31,19 +31,22 @@
       "fieldtype": "Data",
       "label": "Contact Email",
       "options": "Email",
-      "reqd": 1
+      "reqd": 1,
+      "in_list_view": 1
     },
     {
       "fieldname": "contact_phone",
       "fieldtype": "Data",
       "label": "Contact Phone",
       "options": "Phone",
-      "reqd": 1
+      "reqd": 1,
+      "in_list_view": 1
     },
     {
       "fieldname": "address",
       "fieldtype": "Small Text",
-      "label": "Address"
+      "label": "Address",
+      "in_list_view": 1
     },
     {
       "fieldname": "column_break_1",
@@ -63,21 +66,22 @@
       "fieldname": "flyout_inquiry_id",
       "fieldtype": "Data",
       "label": "FlyOut Inquiry ID",
-      "depends_on": "eval:doc.inquiry_source=='FlyOut'",
-      "unique": 1
+      "unique": 1,
+      "in_list_view": 1
     },
     {
       "fieldname": "inquiry_date",
       "fieldtype": "Date",
       "label": "Inquiry Date",
       "reqd": 1,
-      "default": "Today"
+      "default": "Today",
+      "in_list_view": 1
     },
     {
       "fieldname": "source_details",
       "fieldtype": "Small Text",
       "label": "Source Details",
-      "depends_on": "eval:doc.inquiry_source=='Other' || doc.inquiry_source=='Referral'"
+      "in_list_view": 1
     },
     {
       "fieldname": "service_section",
@@ -99,45 +103,94 @@
       "label": "Destination Country",
       "options": "Country",
       "reqd": 1,
+      "in_list_view": 1,
       "in_standard_filter": 1
     },
     {
       "fieldname": "budget_range",
       "fieldtype": "Select",
       "label": "Budget Range",
-      "options": "Under $5,000\n$5,000 - $10,000\n$10,000 - $20,000\nOver $20,000\nNot Specified"
+      "options": "Under $5,000\n$5,000 - $10,000\n$10,000 - $20,000\nOver $20,000\nNot Specified",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "budget",
+      "fieldtype": "Select",
+      "label": "Budget",
+      "options": "Tuition Free\nUp to 500,000\nUp to 1 Million\nUp to 2 Million\nUp to 3 Million\nUp to 4 Million\nUp to 5 Million\nUp to 6 Million\nUp to 7 Million\nUp to 8 Million\nUp to 9 Million\nUp to 10 Million\nMore than LKR 10 Million",
+      "in_list_view": 1
     },
     {
       "fieldname": "timeline",
       "fieldtype": "Select",
       "label": "Expected Timeline",
-      "options": "Urgent (< 1 month)\nShort Term (1-3 months)\nMedium Term (3-6 months)\nLong Term (6+ months)\nNot Specified"
+      "options": "Urgent (< 1 month)\nShort Term (1-3 months)\nMedium Term (3-6 months)\nLong Term (6+ months)\nNot Specified",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "ielts_status",
+      "fieldtype": "Select",
+      "label": "IELTS Status",
+      "options": "None\nA1\nA2\nB1\nB2\nC1",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "preferred_language_of_communication",
+      "fieldtype": "Select",
+      "label": "Preferred Language of Communication",
+      "options": "English\nTamil\nSinhala",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "cv",
+      "fieldtype": "Attach",
+      "label": "CV",
+      "in_list_view": 1
     },
     {
       "fieldname": "study_options_section",
       "fieldtype": "Section Break",
-      "label": "Study Options",
-      "depends_on": "eval:doc.service_type=='Study'"
+      "label": "Study Options"
+    },
+    {
+      "fieldname": "preferred_field_of_study",
+      "fieldtype": "Select",
+      "label": "Preferred Field of Study",
+      "options": "Open to All\nEducation\nFoundation\nSocial Sciences\nNatural Sciences\nHealth and Medicine\nEngineering and Technology\nBusiness and Management\nLaw and Legal Studies\nInformation and Communication Studies\nArts and Humanities\nSports and Physical Education\nAgriculture and Environmental Studies\nArchitecture and Design\nTourism and Hospitality",
+      "in_list_view": 1
     },
     {
       "fieldname": "study_options",
       "fieldtype": "Table",
       "label": "Study Options",
       "options": "Inquiry Study Option",
-      "depends_on": "eval:doc.service_type=='Study'"
+      "in_list_view": 1
     },
     {
       "fieldname": "work_options_section",
       "fieldtype": "Section Break",
-      "label": "Work Options",
-      "depends_on": "eval:doc.service_type=='Work'"
+      "label": "Work Options"
+    },
+    {
+      "fieldname": "preferred_field_of_work",
+      "fieldtype": "Select",
+      "label": "Preferred Field of Work",
+      "options": "Open to All\nFoundation\nEducation\nSocial Sciences\nNatural Sciences\nHealth and Medicine\nEngineering and Technology\nBusiness and Management\nLaw and Legal Studies\nInformation and Communication Studies\nArts and Humanities\nSports and Physical Education\nAgriculture and Environmental Studies\nArchitecture and Design\nTourism and Hospitality",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "length_of_work_experience",
+      "fieldtype": "Select",
+      "label": "Length of Work Experience",
+      "options": "No experience or in a Internship\nMore than 2 years\nMore than 5 years\nMore than 7 years\nMore than 10 years",
+      "in_list_view": 1
     },
     {
       "fieldname": "work_options",
       "fieldtype": "Table",
       "label": "Work Options",
       "options": "Inquiry Work Option",
-      "depends_on": "eval:doc.service_type=='Work'"
+      "in_list_view": 1
     },
     {
       "fieldname": "process_section",
@@ -158,7 +211,8 @@
       "fieldname": "assigned_to",
       "fieldtype": "Link",
       "label": "Assigned To",
-      "options": "User"
+      "options": "User",
+      "in_list_view": 1
     },
     {
       "fieldname": "column_break_2",
@@ -170,20 +224,22 @@
       "label": "Linked Client",
       "options": "Client",
       "read_only": 1,
-      "depends_on": "eval:doc.status=='Converted'"
+      "in_list_view": 1
     },
     {
-       "fieldname": "company_signatory",
-       "fieldtype": "Link",
-       "label": "Company Signatory",
-       "options": "User",
-       "reqd": 0 
+      "fieldname": "company_signatory",
+      "fieldtype": "Link",
+      "label": "Company Signatory",
+      "options": "User",
+      "reqd": 0,
+      "in_list_view": 1
     },
     {
-       "fieldname": "signatory_designation",
-       "fieldtype": "Data",
-       "label": "Signatory Designation",
-       "reqd": 0
+      "fieldname": "signatory_designation",
+      "fieldtype": "Data",
+      "label": "Signatory Designation",
+      "reqd": 0,
+      "in_list_view": 1
     },
     {
       "fieldname": "notes_section",
@@ -198,8 +254,7 @@
     {
       "fieldname": "convert_to_client",
       "fieldtype": "Button",
-      "label": "Convert to Client",
-      "depends_on": "eval:doc.workflow_state=='Under Review'" 
+      "label": "Convert to Client"
     }
   ],
   "permissions": [

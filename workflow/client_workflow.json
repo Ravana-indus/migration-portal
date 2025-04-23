@@ -1,0 +1,55 @@
+[
+    {
+        "doctype": "Workflow",
+        "workflow_name": "Client Process",
+        "document_type": "Client",
+        "workflow_state_field": "status",
+        "is_active": 1,
+        "states": [
+            {
+                "state": "Active",
+                "doc_status": 1
+            },
+            {
+                "state": "In Progress",
+                "doc_status": 1
+            },
+            {
+                "state": "Completed",
+                "doc_status": 1
+            },
+            {
+                "state": "Cancelled",
+                "doc_status": 2
+            }
+        ],
+        "transitions": [
+            {
+                "state": "Active",
+                "next_state": "In Progress",
+                "action": "Start Process",
+                "allowed": "Migration Consultant"
+            },
+            {
+                "state": "In Progress",
+                "next_state": "Completed",
+                "action": "Complete",
+                "allowed": "Migration Manager"
+                # Optional: Add condition like all required documents verified
+                # "condition": "doc.all_documents_verified == 1" 
+            },
+            {
+                "state": "In Progress",
+                "next_state": "Cancelled",
+                "action": "Cancel",
+                "allowed": "Migration Manager"
+            },
+            {
+                "state": "Active",
+                "next_state": "Cancelled",
+                "action": "Cancel",
+                "allowed": "Migration Manager"
+            }
+        ]
+    }
+] 

@@ -4,7 +4,7 @@
   "engine": "InnoDB",
   "module": "Migration Portal",
   "naming_rule": "Expression",
-  "autoname": "format:FLYOUT-SETTINGS",
+  "autoname": "format:FLYOUT-SETTINGS", 
   "is_single": 1,
   "fields": [
     {
@@ -90,12 +90,6 @@
       "reqd": 1
     },
     {
-      "fieldname": "webhook_secret",
-       "fieldtype": "Password",
-       "label": "Webhook Secret (Optional)",
-       "description": "Used to verify incoming webhook requests from FlyOut."
-    },
-    {
       "fieldname": "column_break_2",
       "fieldtype": "Column Break"
     },
@@ -105,7 +99,8 @@
       "label": "Sync Frequency",
       "options": "Real-time\nHourly\nDaily\nWeekly",
       "default": "Real-time",
-      "depends_on": "eval:doc.enable_sync==1"
+      "depends_on": "eval:doc.enable_sync==1",
+      "hidden": 1
     },
     {
       "fieldname": "last_sync_datetime",
@@ -122,24 +117,19 @@
       "read_only": 1
     },
     {
-       "fieldname": "allowed_webhook_ips",
-       "fieldtype": "Text",
-       "label": "Allowed Webhook IPs (Optional)",
-       "description": "If FlyOut uses static IPs, list one per line to verify webhook source."
-    },
-    {
       "fieldname": "public_profile_section",
       "fieldtype": "Section Break",
-      "label": "Public Profile (Displayed on FlyOut)"
+      "label": "Public Profile"
     },
     {
       "fieldname": "company_description",
       "fieldtype": "Text Editor",
-      "label": "Company Description"
+      "label": "Company Description",
+      "description": "This information will be displayed on FlyOut's platform"
     },
     {
       "fieldname": "services_offered",
-      "fieldtype": "Table MultiSelect",
+      "fieldtype": "Table MultiSelect", 
       "label": "Services Offered",
       "options": "Migration Service"
     },

@@ -3,38 +3,13 @@
  "name": "Client Invoice Reference",
  "module": "Migration Portal",
  "istable": 1,
- "engine": "InnoDB",
  "fields": [
   {
    "fieldname": "invoice",
    "fieldtype": "Link",
    "label": "Invoice",
-   "options": "Sales Invoice",
+   "options": "Sales Invoice", 
    "reqd": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "posting_date",
-   "fieldtype": "Date",
-   "label": "Posting Date",
-   "read_only": 1,
-   "fetch_from": "invoice.posting_date",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "grand_total",
-   "fieldtype": "Currency",
-   "label": "Grand Total",
-   "read_only": 1,
-   "fetch_from": "invoice.grand_total",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "outstanding_amount",
-   "fieldtype": "Currency",
-   "label": "Outstanding Amount",
-   "read_only": 1,
-   "fetch_from": "invoice.outstanding_amount",
    "in_list_view": 1
   },
   {
@@ -43,6 +18,22 @@
    "label": "Status",
    "read_only": 1,
    "fetch_from": "invoice.status",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date",
+   "read_only": 1,
+   "fetch_from": "invoice.due_date",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "grand_total",
+   "fieldtype": "Currency",
+   "label": "Grand Total",
+   "read_only": 1,
+   "fetch_from": "invoice.grand_total",
    "in_list_view": 1
   }
  ]

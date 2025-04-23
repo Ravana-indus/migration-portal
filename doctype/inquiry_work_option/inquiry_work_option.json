@@ -13,21 +13,6 @@
    "in_list_view": 1
   },
   {
-   "fieldname": "job_title",
-   "fieldtype": "Data",
-   "label": "Job Title",
-   "fetch_from": "work_option.job_title",
-   "read_only": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "company",
-   "fieldtype": "Data",
-   "label": "Company",
-   "fetch_from": "work_option.company",
-   "read_only": 1
-  },
-  {
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"

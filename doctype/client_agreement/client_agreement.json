@@ -3,7 +3,6 @@
  "name": "Client Agreement",
  "module": "Migration Portal",
  "istable": 1,
- "engine": "InnoDB",
  "fields": [
   {
    "fieldname": "agreement",
@@ -14,27 +13,12 @@
    "in_list_view": 1
   },
   {
-   "fieldname": "agreement_title",
-   "fieldtype": "Data",
-   "label": "Agreement Title",
-   "read_only": 1,
-   "fetch_from": "agreement.agreement_title",
-   "in_list_view": 1
-  },
-  {
    "fieldname": "status",
    "fieldtype": "Data",
    "label": "Status",
    "read_only": 1,
    "fetch_from": "agreement.status",
    "in_list_view": 1
-  },
-  {
-   "fieldname": "signed_date",
-   "fieldtype": "Date",
-   "label": "Signed Date",
-   "read_only": 1,
-   "fetch_from": "agreement.signed_date"
   }
  ]
 } 

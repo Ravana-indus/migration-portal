@@ -64,7 +64,7 @@
       "label": "Currency",
       "options": "Currency",
       "reqd": 1,
-      "default": "USD" # Consider fetching default from company settings
+      "default": "USD"
     },
     {
       "fieldname": "column_break_1",
@@ -109,13 +109,15 @@
       "fieldname": "bank_name",
       "fieldtype": "Data",
       "label": "Bank Name",
-      "depends_on": "eval:doc.payment_method=='Bank Transfer' || doc.payment_method=='Cheque'"
+      "depends_on": "eval:doc.payment_method=='Bank Transfer' || doc.payment_method=='Cheque'",
+      "hidden": 1
     },
     {
       "fieldname": "cheque_number",
       "fieldtype": "Data",
       "label": "Cheque Number",
-      "depends_on": "eval:doc.payment_method=='Cheque'"
+      "depends_on": "eval:doc.payment_method=='Cheque'",
+      "hidden": 1
     },
     {
       "fieldname": "column_break_2",
@@ -166,11 +168,10 @@
       "delete": 1,
       "submit": 1,
       "cancel": 1,
-      "amend": 1,
-      "set_user_permissions": 1
+      "amend": 1
     },
     {
-      "role": "Finance Manager", # Assuming Finance role exists
+      "role": "Finance Manager",
       "read": 1,
       "write": 1,
       "create": 1,
@@ -193,8 +194,7 @@
       "delete": 1,
       "submit": 1,
       "cancel": 1,
-      "amend": 1,
-      "set_user_permissions": 1
+      "amend": 1
     }
   ]
 } 

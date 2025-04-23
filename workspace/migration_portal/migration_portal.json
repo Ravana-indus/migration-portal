@@ -1,0 +1,77 @@
+{
+ "allow_customization": 1,
+ "allow_rename": 1,
+ "creation": "2024-07-29 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "extends_another_page": 0,
+ "hide_custom": 0,
+ "idx": 0,
+ "label": "Migration Portal",
+ "modified": "2024-07-29 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Migration Portal",
+ "name": "Migration Portal",
+ "owner": "Administrator",
+ "public": 1,
+ "sequence_id": 1,
+ "shortcuts": [
+  {
+   "doc_view": "List",
+   "label": "Inquiries",
+   "link_to": "Inquiry",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Clients",
+   "link_to": "Client",
+   "type": "DocType"
+  },
+  {
+   "format": "{name}",
+   "label": "Create New Inquiry",
+   "link_to": "Inquiry",
+   "open_on_load": 0,
+   "type": "DocType", 
+   "is_query_report": 0,
+   "doctype_or_workspace": "Inquiry"
+  },
+  {
+   "doc_view": "List",
+   "label": "Agreements",
+   "link_to": "Migration Agreement",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Payments",
+   "link_to": "Migration Payment",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Study Options Catalog",
+   "link_to": "Study Option",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Work Options Catalog",
+   "link_to": "Work Option",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Sync Log",
+   "link_to": "Sync Log",
+   "type": "DocType"
+  },
+  {
+   "label": "FlyOut Settings",
+   "link_to": "FlyOut Account Settings",
+   "type": "DocType"
+  }
+ ],
+ "title": "Migration Portal"
+} 

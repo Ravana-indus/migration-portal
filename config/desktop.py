@@ -5,7 +5,7 @@ def get_data():
 		{
 			"module_name": "Migration Portal",
 			"color": "grey",
-			"icon": "octicon octicon-repo-push",
+			"icon": "octicon octicon-briefcase",
 			"type": "module",
 			"label": _("Migration Portal")
 		}

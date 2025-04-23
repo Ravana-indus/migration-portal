@@ -13,21 +13,6 @@
    "in_list_view": 1
   },
   {
-   "fieldname": "program_name",
-   "fieldtype": "Data",
-   "label": "Program Name",
-   "fetch_from": "study_option.program_name",
-   "read_only": 1,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "institution",
-   "fieldtype": "Data",
-   "label": "Institution",
-   "fetch_from": "study_option.institution",
-   "read_only": 1
-  },
-  {
    "fieldname": "notes",
    "fieldtype": "Small Text",
    "label": "Notes"

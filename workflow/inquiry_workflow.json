@@ -1,0 +1,50 @@
+[
+    {
+        "doctype": "Workflow",
+        "workflow_name": "Inquiry Process",
+        "document_type": "Inquiry",
+        "workflow_state_field": "status",
+        "is_active": 1,
+        "states": [
+            {
+                "state": "New",
+                "doc_status": 0
+            },
+            {
+                "state": "Under Review",
+                "doc_status": 1
+            },
+            {
+                "state": "Converted",
+                "doc_status": 1
+            },
+            {
+                "state": "Rejected",
+                "doc_status": 2
+            }
+        ],
+        "transitions": [
+            {
+                "state": "New",
+                "next_state": "Under Review",
+                "action": "Start Review",
+                "allowed": "Migration Consultant"
+            },
+            {
+                "state": "Under Review",
+                "next_state": "Converted",
+                "action": "Convert to Client",
+                "allowed": "Migration Manager",
+                "action_type": "Action",
+                "handler": "migration_portal.migration_portal.doctype.inquiry.inquiry.convert_to_client"
+            },
+            {
+                "state": "Under Review",
+                "next_state": "Rejected",
+                "action": "Reject",
+                "allowed": "Migration Manager"
+            }
+            
+        ]
+    }
+] 

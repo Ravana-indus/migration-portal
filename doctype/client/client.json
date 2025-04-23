@@ -20,7 +20,8 @@
       "options": "Inquiry",
       "reqd": 1,
       "in_list_view": 1,
-      "read_only": 1
+      "read_only": 1,
+      "no_copy": 1
     },
     {
       "fieldname": "client_name",
@@ -68,7 +69,7 @@
       "fieldname": "date_of_birth",
       "fieldtype": "Date",
       "label": "Date of Birth",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "column_break_1",
@@ -79,19 +80,19 @@
       "fieldtype": "Link",
       "label": "Nationality",
       "options": "Country",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "passport_number",
       "fieldtype": "Data",
       "label": "Passport Number",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "passport_expiry",
       "fieldtype": "Date",
       "label": "Passport Expiry Date",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "address_section",
@@ -102,7 +103,7 @@
       "fieldname": "address_line1",
       "fieldtype": "Data",
       "label": "Address Line 1",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "address_line2",
@@ -113,7 +114,7 @@
       "fieldname": "city",
       "fieldtype": "Data",
       "label": "City",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "column_break_2",
@@ -122,21 +123,19 @@
     {
       "fieldname": "state",
       "fieldtype": "Data",
-      "label": "State/Province",
-      "reqd": 0
+      "label": "State/Province"
     },
     {
       "fieldname": "postal_code",
       "fieldtype": "Data",
-      "label": "Postal Code",
-      "reqd": 0
+      "label": "Postal Code"
     },
     {
       "fieldname": "country",
       "fieldtype": "Link",
       "label": "Country",
       "options": "Country",
-      "reqd": 0
+      "reqd": 1
     },
     {
       "fieldname": "education_section",
@@ -235,14 +234,16 @@
       "fieldtype": "Select",
       "label": "Service Type",
       "options": "Study\nWork\nVisit\nResidence\nCitizenship\nOther",
-      "reqd": 1
+      "reqd": 1,
+      "read_only": 1
     },
     {
       "fieldname": "destination_country",
       "fieldtype": "Link",
       "label": "Destination Country",
       "options": "Country",
-      "reqd": 1
+      "reqd": 1,
+      "read_only": 1
     },
     {
       "fieldname": "expected_completion",
@@ -259,17 +260,6 @@
       "label": "Service Details"
     },
     {
-      "fieldname": "playbook_section",
-      "fieldtype": "Section Break",
-      "label": "Playbook Steps"
-    },
-    {
-      "fieldname": "playbook_steps",
-      "fieldtype": "Table",
-      "label": "Playbook Steps",
-      "options": "Playbook Step"
-    },
-    {
       "fieldname": "timeline_section",
       "fieldtype": "Section Break",
       "label": "Timeline & Milestones"
@@ -279,6 +269,22 @@
       "fieldtype": "Table",
       "label": "Milestones",
       "options": "Client Milestone"
+    },
+    {
+      "fieldname": "playbook_tab",
+      "fieldtype": "Tab Break",
+      "label": "Playbook"
+    },
+    {
+      "fieldname": "playbook_section",
+      "fieldtype": "Section Break",
+      "label": "Playbook Steps"
+    },
+    {
+      "fieldname": "playbook_steps",
+      "fieldtype": "Table",
+      "label": "Playbook Steps",
+      "options": "Client Playbook Step"
     },
     {
       "fieldname": "documents_tab",
@@ -360,6 +366,12 @@
       "fieldname": "communication_tab",
       "fieldtype": "Tab Break",
       "label": "Communication"
+    },
+    {
+      "fieldname": "communication_logs",
+      "fieldtype": "Table",
+      "label": "Communication Logs",
+      "options": "Communication Log"
     }
   ],
   "permissions": [
@@ -371,16 +383,14 @@
       "delete": 1,
       "submit": 1,
       "cancel": 1,
-      "amend": 1,
-      "set_user_permissions": 1
+      "amend": 1
     },
     {
       "role": "Migration Consultant",
       "read": 1,
       "write": 1,
       "create": 0,
-      "submit": 1,
-      "set_user_permissions": 1
+      "submit": 1
     },
     {
       "role": "Documentation Specialist",
@@ -397,8 +407,13 @@
       "delete": 1,
       "submit": 1,
       "cancel": 1,
-      "amend": 1,
-      "set_user_permissions": 1
+      "amend": 1
+    }
+  ],
+  "links": [
+    {
+      "link_doctype": "Inquiry",
+      "link_fieldname": "linked_client"
     }
   ]
 } 

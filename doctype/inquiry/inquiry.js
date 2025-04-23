@@ -1,27 +1,8 @@
+// Copyright (c) 2024, RavanOS and contributors
+// For license information, please see license.txt
+
 frappe.ui.form.on("Inquiry", {
 	refresh: function(frm) {
-		// Button logic is now handled by Workflow Actions
-		// We can remove the old button adding logic if it exists.
-		// if (frm.doc.status == "Under Review" && !frm.doc.linked_client && !frm.is_new()) {
-		// 	frm.add_custom_button(__("Convert to Client"), function() {
-		// 		frappe.call({
-		// 			method: "migration_portal.migration_portal.doctype.inquiry.inquiry.convert_to_client",
-		// 			args: {
-		// 				inquiry_name: frm.doc.name
-		// 			},
-		// 			callback: function(r) {
-		// 				if (r.message) {
-		// 					frm.reload_doc();
-		// 					frappe.set_route("Form", "Client", r.message);
-		// 				}
-		// 			}
-		// 		});
-		// 	});
-		// } else {
-        //     // Clear button if status is not 'Under Review' or already converted
-        //     frm.remove_custom_button("Convert to Client");
-        // }
-
 		// Show link to client if converted
 		if (frm.doc.linked_client) {
 			frm.add_custom_button(__("View Client"), function() {
@@ -36,58 +17,22 @@ frappe.ui.form.on("Inquiry", {
 	},
 
 	inquiry_source: function(frm) {
-		// Make FlyOut ID mandatory if source is FlyOut
-		frm.toggle_reqd("flyout_inquiry_id", frm.doc.inquiry_source === "FlyOut");
+		// No visibility toggles needed
 	},
 
 	service_type: function(frm) {
 		// Show/hide relevant sections based on service type
 		frm.toggle_display("study_options_section", frm.doc.service_type === "Study");
 		frm.toggle_display("study_options", frm.doc.service_type === "Study");
+		frm.toggle_display("preferred_field_of_study", frm.doc.service_type === "Study");
 		frm.toggle_display("work_options_section", frm.doc.service_type === "Work");
 		frm.toggle_display("work_options", frm.doc.service_type === "Work");
-	},
-    
-    destination_country: function(frm) {
-        // Clear child tables if country changes?
-        // frm.clear_table("study_options");
-        // frm.clear_table("work_options");
-        // frm.refresh_field("study_options");
-        // frm.refresh_field("work_options");
-        
-        // Apply filters to child table link fields
-        // Note: This relies on the child table fields being rendered. 
-        // It might need adjustment if tables are initially hidden.
-        frm.set_query("study_option", "study_options", function(doc, cdt, cdn) {
-            let child = locals[cdt][cdn];
-            let filters = {};
-            if (doc.destination_country) {
-                filters.country = doc.destination_country;
-            }
-            // Add other filters if needed
-            // filters.level = ["in", ["Bachelor's Degree", "Master's Degree"]]; 
-            return {
-                filters: filters
-            };
-        });
-        
-        frm.set_query("work_option", "work_options", function(doc, cdt, cdn) {
-            let child = locals[cdt][cdn];
-            let filters = {};
-            if (doc.destination_country) {
-                filters.country = doc.destination_country;
-            }
-            // Add other filters if needed
-            // filters.required_experience_years = ["<=", 5];
-            return {
-                filters: filters
-            };
-        });
-    }
+		frm.toggle_display("preferred_field_of_work", frm.doc.service_type === "Work");
+		frm.toggle_display("length_of_work_experience", frm.doc.service_type === "Work");
+	}
 });
 
 // Setup filters for child tables when a new row is added 
-// (needed because set_query on parent field only affects existing rows initially)
 frappe.ui.form.on("Inquiry Study Option", {
     study_options_add: function(frm, cdt, cdn) {
         frm.trigger("destination_country"); 
@@ -98,4 +43,13 @@ frappe.ui.form.on("Inquiry Work Option", {
     work_options_add: function(frm, cdt, cdn) {
         frm.trigger("destination_country");
     }
-}); 
+});
+
+// Example for Child Table script (if needed later)
+/*
+frappe.ui.form.on("Inquiry Study Option", {
+	field_to_validate(frm, cdt, cdn) {
+		// Add validation for child table rows
+	}
+});
+*/ 

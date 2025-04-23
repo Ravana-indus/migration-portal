@@ -1,9 +1,8 @@
 {
  "doctype": "DocType",
- "name": "Migration Payment Reference",
+ "name": "Migration Payment Reference", 
  "module": "Migration Portal",
  "istable": 1,
- "engine": "InnoDB",
  "fields": [
   {
    "fieldname": "payment",
@@ -30,17 +29,9 @@
    "in_list_view": 1
   },
   {
-   "fieldname": "currency",
-   "fieldtype": "Link",
-   "label": "Currency",
-   "options": "Currency",
-   "read_only": 1,
-   "fetch_from": "payment.currency"
-  },
-  {
-   "fieldname": "payment_status",
+   "fieldname": "status",
    "fieldtype": "Data",
-   "label": "Payment Status",
+   "label": "Status",
    "read_only": 1,
    "fetch_from": "payment.payment_status",
    "in_list_view": 1

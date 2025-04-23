@@ -1,182 +1,131 @@
+# Copyright (c) 2024, RavanOS and contributors
+# Utility functions for FlyOut synchronization
+
 import frappe
 import requests
-import json
-from frappe.utils import now_datetime, get_datetime
-import time
+from frappe.integrations.utils import make_post_request
+from frappe.utils import now_datetime
 
-def push_inquiry_updates(data, settings=None):
-    """
-    Stub function for pushing inquiry updates to FlyOut
+# Assuming log_sync_attempt is in api/flyout.py
+from migration_portal.migration_portal.api.flyout import log_sync_attempt
+
+# --- Outbound Sync Functions --- #
+
+def push_inquiry_updates(data, settings):
+    """Pushes inquiry updates to FlyOut API."""
+    endpoint = f"{settings.flyout_base_url}/inquiries/{data.get('inquiry_id')}" # Assuming RESTful endpoint
+    headers = {
+        "Authorization": f"Bearer {settings.get_password('api_key')}",
+        "Content-Type": "application/json"
+    }
+    method = "PUT" # Or PATCH
     
-    Args:
-        data (dict or Document): Data to push
-        settings (Document, optional): FlyOut Account Settings document
-    
-    Returns:
-        dict: Result with success status and message
-    """
+    # Log attempt before sending
+    log_id = log_sync_attempt(
+        direction="Outbound", status="Attempting", doctype="Inquiry", 
+        docname=frappe.db.get_value("Inquiry", {"flyout_inquiry_id": data.get('inquiry_id')}),
+        flyout_id=data.get('inquiry_id'), endpoint=endpoint, method=method, request_data=data
+    )
+
     try:
-        # Just log the call for now
-        frappe.logger().info(f"push_inquiry_updates called with data: {data}")
+        response = requests.put(endpoint, headers=headers, json=data, timeout=15)
+        response.raise_for_status() # Raise exception for bad status codes (4xx or 5xx)
         
-        # Mock successful response
-        return {
-            "success": True,
-            "message": "Data sync simulated successfully"
-        }
+        response_data = response.json()
+        # Update log with success
+        log_sync_attempt(log_id=log_id, status="Success", response_data=response_data)
+        return {"success": True, "response": response_data}
+        
+    except requests.exceptions.RequestException as e:
+        error_message = f"Connection Error: {e}"
+        # Update log with error
+        log_sync_attempt(log_id=log_id, status="Error", error_message=error_message)
+        return {"success": False, "message": error_message}
     except Exception as e:
-        frappe.logger().error(f"Error in push_inquiry_updates: {str(e)}")
-        return {
-            "success": False,
-            "message": str(e)
-        }
+        error_message = f"API Error: {e}"
+        if hasattr(e, 'response') and e.response is not None:
+            error_message += f" | Response: {e.response.text}"
+        # Update log with error
+        log_sync_attempt(log_id=log_id, status="Error", error_message=error_message, response_data=getattr(e.response, 'text', None))
+        return {"success": False, "message": error_message}
 
-def push_client_updates(data, settings=None):
+def push_client_updates(data, settings):
+    """Pushes client-related updates to FlyOut API.
+    Note: This might use the same endpoint as inquiries or a different one.
+    Adjust endpoint and payload based on FlyOut's API design.
     """
-    Stub function for pushing client updates to FlyOut
-    
-    Args:
-        data (dict): Client data to push
-        settings (Document, optional): FlyOut Account Settings document
-    
-    Returns:
-        dict: Result with success status and message
-    """
-    try:
-        # Just log the call for now
-        frappe.logger().info(f"push_client_updates called with data: {data}")
-        
-        # Log the sync attempt
-        from migration_portal.migration_portal.api.flyout import log_sync_attempt
-        log_sync_attempt("Client", data.get("inquiry_id"), "PUSH", data, {"success": True, "message": "Simulated success"})
-        
-        # Mock successful response
-        return {
-            "success": True,
-            "message": "Client data sync simulated successfully"
-        }
-    except Exception as e:
-        frappe.logger().error(f"Error in push_client_updates: {str(e)}")
-        return {
-            "success": False,
-            "message": str(e)
-        }
+    # For now, reuse the inquiry push function
+    # Replace with dedicated logic if FlyOut has a separate client endpoint/payload
+    return push_inquiry_updates(data, settings) 
 
-def make_api_request(method, url, headers, data=None, max_retries=3, retry_delay=2):
-    """
-    Make an API request with retry logic.
-    
-    Args:
-        method (str): HTTP method (GET, POST, PUT, DELETE)
-        url (str): API endpoint
-        headers (dict): HTTP headers
-        data (dict, optional): Data to send (will be JSON serialized for POST/PUT)
-        max_retries (int, optional): Maximum number of retries
-        retry_delay (int, optional): Delay between retries in seconds
-    
-    Returns:
-        requests.Response: HTTP response object
-    
-    Raises:
-        requests.exceptions.RequestException: If request fails after all retries.
-    """
-    retry_count = 0
-    last_exception = None
-    
-    while retry_count < max_retries:
+# --- Sync Scheduling & Retry --- #
+
+@frappe.whitelist()
+def schedule_sync(doctype, docname):
+    """Schedules a background job to attempt sync later."""
+    # This requires setting up background workers and potentially RQ scheduler
+    # For simplicity, we'll just log it for now.
+    frappe.log_info(f"Sync retry requested for {doctype} {docname}", "Sync Scheduler")
+    # Real implementation would use frappe.enqueue:
+    # frappe.enqueue("migration_portal.migration_portal.utils.sync_utils.retry_sync_job", 
+    #                queue="short", timeout=300, doctype=doctype, docname=docname)
+    # Mark log as retry scheduled if possible
+    log = frappe.db.get_value("Sync Log", {"reference_doctype": doctype, "reference_name": docname, "status": "Error"}, "name")
+    if log:
         try:
-            request_kwargs = {
-                "headers": headers,
-                "timeout": 30 # Standard timeout
-            }
-            if data is not None and method.upper() in ["POST", "PUT"]:
-                 # Use json parameter for requests library to handle serialization and content-type
-                 request_kwargs["json"] = data 
-            elif data is not None and method.upper() == "GET": # Params for GET
-                 request_kwargs["params"] = data
+            sync_log = frappe.get_doc("Sync Log", log)
+            sync_log.retry_scheduled = 1
+            sync_log.save(ignore_permissions=True)
+        except Exception as e:
+            frappe.log_error(f"Failed to mark Sync Log {log} as retry scheduled: {e}")
 
-            response = requests.request(method, url, **request_kwargs)
-            
-            # Check if the response indicates failure
-            response.raise_for_status() # Raises HTTPError for 4xx/5xx
-            
-            return response # Return successful response
+# Example background job function (would need RQ setup)
+# def retry_sync_job(doctype, docname):
+#     doc = frappe.get_doc(doctype, docname)
+#     if hasattr(doc, "sync_to_flyout"):
+#         # Determine the correct status to send based on current state
+#         current_status = doc.status.upper().replace(" ", "_") # Example mapping
+#         doc.sync_to_flyout(current_status)
+#         # Increment retry count in log
+#         log = frappe.db.get_value("Sync Log", {"reference_doctype": doctype, "reference_name": docname, "status": "Error"}, "name")
+#         if log:
+#              sync_log = frappe.get_doc("Sync Log", log)
+#              sync_log.retry_count = (sync_log.retry_count or 0) + 1
+#              sync_log.retry_scheduled = 0 # Reset flag
+#              sync_log.save(ignore_permissions=True)
 
-        except requests.exceptions.RequestException as e:
-            last_exception = e
-            retry_count += 1
-            
-            # Log the retry attempt
-            frappe.log_error(
-                f"API request to {url} failed (attempt {retry_count}/{max_retries}): {str(e)}",
-                "FlyOut API Retry"
-            )
-            
-            # Wait before retrying, unless it's the last attempt
-            if retry_count < max_retries:
-                # Exponential backoff: 2s, 4s, 8s, ...
-                time.sleep(retry_delay * (2 ** (retry_count - 1))) 
-            
-    # If loop completes, all retries failed. Raise the last exception.
-    if last_exception:
-         raise last_exception
-    else:
-         # Should not happen if max_retries > 0, but handle defensively
-         raise requests.exceptions.RequestException("API request failed after retries, but no exception was captured.")
-
-
-def schedule_sync(doctype, docname, retry_after=300):
-    """
-    Stub function for scheduling a document for sync retry
-    
-    Args:
-        doctype (str): DocType name
-        docname (str): Document name
-        retry_after (int, optional): Retry after seconds
-    """
-    frappe.logger().info(f"schedule_sync called for {doctype} {docname}")
-    
-    # For now, just log the call without actual scheduling
-    pass
-
-
-def retry_sync(doctype, docname, sync_log_name):
-    """
-    Background job function to retry a failed sync operation.
-    
-    Args:
-        doctype (str): DocType name.
-        docname (str): Document name.
-        sync_log_name (str): Sync Log document name that triggered the retry.
-    """
+@frappe.whitelist()
+def retry_sync_from_log(sync_log_name):
+    """Triggers a retry based on a specific Sync Log entry."""
     try:
-        # Get the document
-        doc = frappe.get_doc(doctype, docname)
-        
-        # Get the sync log
         log = frappe.get_doc("Sync Log", sync_log_name)
-        
-        # Increment retry count on the log
-        log.db_set("retry_count", log.retry_count + 1)
-        log.db_set("retry_scheduled", 0) # Mark as no longer scheduled for this attempt
-        
-        # Call the appropriate sync method based on doctype
-        if hasattr(doc, 'sync_to_flyout') and callable(doc.sync_to_flyout):
-            frappe.logger().info(f"Retrying sync for {doctype} {docname} (Log: {sync_log_name})")
-            doc.sync_to_flyout(is_retry=True, originating_log=sync_log_name)
+        if log.status == "Error" and log.reference_doctype and log.reference_name:
+            schedule_sync(log.reference_doctype, log.reference_name)
+            return {"status": "success", "message": "Retry scheduled."}
         else:
-             frappe.log_error(f"Cannot retry sync for {doctype} {docname}: No sync_to_flyout method found.", "Sync Retry Error")
-
+             return {"status": "error", "message": "Log is not in error state or reference is missing."}
     except Exception as e:
-        frappe.log_error(f"Error during sync retry for {doctype} {docname} (Log: {sync_log_name}): {e}", "Sync Retry Execution Error")
-        # Log the error in the original sync log 
-        try:
-             log = frappe.get_doc("Sync Log", sync_log_name)
-             # Append to error message to avoid overwriting original failure reason
-             current_error = log.error_message or ""
-             log.db_set("error_message", f"{current_error}\nRETRY FAILED: {str(e)}\n{frappe.get_traceback()}")
-             # Decide if we should stop retrying after N attempts based on log.retry_count
-        except Exception as log_e:
-             frappe.log_error(f"Failed to update sync log {sync_log_name} after retry error: {log_e}", "Sync Log Update Error")
+        frappe.log_error(f"Error scheduling retry from log {sync_log_name}: {e}")
+        return {"status": "error", "message": f"Error scheduling retry: {e}"}
 
-# Add other utility functions as needed, e.g., for communication 
+
+# --- Helper for updating Sync Log (potentially move to api/flyout.py) ---
+# Simplified update function for outbound calls within this file
+def update_sync_log(log_id, status, response_data=None, error_message=None):
+    if not log_id:
+        return
+    try:
+        log = frappe.get_doc("Sync Log", log_id)
+        log.status = status
+        log.response_data = frappe.as_json(response_data)
+        log.error_message = error_message
+        log.save(ignore_permissions=True)
+    except Exception as e:
+        frappe.log_error(f"Failed to update Sync Log {log_id}: {e}", "Sync Log Update Error")
+
+# Add this import line to the api/flyout.py file:
+# from migration_portal.migration_portal.utils.sync_utils import schedule_sync, push_inquiry_updates, push_client_updates 
+
+# Add this import line to the doctype py files (e.g., inquiry.py, client.py)
+# from migration_portal.migration_portal.api.flyout import log_sync_attempt
+# from migration_portal.migration_portal.utils.sync_utils import schedule_sync, push_inquiry_updates, push_client_updates 

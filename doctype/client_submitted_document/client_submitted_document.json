@@ -3,20 +3,13 @@
  "name": "Client Submitted Document",
  "module": "Migration Portal",
  "istable": 1,
- "engine": "InnoDB",
  "fields": [
   {
-   "fieldname": "document_type",
+   "fieldname": "document_name",
    "fieldtype": "Data",
-   "label": "Document Type",
+   "label": "Document Name",
    "reqd": 1,
    "in_list_view": 1
-  },
-  {
-   "fieldname": "attachment",
-   "fieldtype": "Attach",
-   "label": "Attachment",
-   "reqd": 1
   },
   {
    "fieldname": "submission_date",
@@ -26,31 +19,15 @@
    "in_list_view": 1
   },
   {
-   "fieldname": "verification_status",
-   "fieldtype": "Select",
-   "label": "Verification Status",
-   "options": "Pending\nVerified\nRejected",
-   "default": "Pending",
-   "in_list_view": 1
+   "fieldname": "attachment",
+   "fieldtype": "Attach",
+   "label": "Attachment",
+   "reqd": 1
   },
   {
-   "fieldname": "verified_by",
-   "fieldtype": "Link",
-   "label": "Verified By",
-   "options": "User",
-   "depends_on": "eval:doc.verification_status=='Verified'"
-  },
-  {
-   "fieldname": "verification_date",
-   "fieldtype": "Date",
-   "label": "Verification Date",
-   "depends_on": "eval:doc.verification_status=='Verified'"
-  },
-  {
-   "fieldname": "rejection_reason",
+   "fieldname": "notes",
    "fieldtype": "Small Text",
-   "label": "Rejection Reason",
-   "depends_on": "eval:doc.verification_status=='Rejected'"
+   "label": "Notes"
   }
  ]
 } 

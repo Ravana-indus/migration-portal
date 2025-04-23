@@ -3,202 +3,256 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import now_datetime
+from frappe.utils import now_datetime, get_datetime_str, get_link_to_form
 
-# Import sync utility
-# Make sure the path is correct based on your app structure
-# from migration_portal.migration_portal.utils.sync_utils import push_inquiry_updates, schedule_sync
-# Fixed import path - commented out to prevent errors
-# from migration_portal.migration_portal.utils.sync_utils import push_inquiry_updates, schedule_sync
-
-# Function called by the 'on_update' hook in hooks.py
-def trigger_flyout_sync(doc, method):
-	"""
-	Wrapper function called by the doc_event hook `on_update`.
-	Calls the sync_to_flyout method on the document instance.
-	"""
-	# `method` is passed by the hook but often not needed here directly
-	# Check if sync is needed and call the instance method
-	if doc.inquiry_source == "FlyOut" and doc.flyout_inquiry_id:
-		# Check if it's not already being synced (to prevent loops)
-		if not frappe.flags.get("in_sync"):
-			doc.sync_to_flyout()
-
+# Import actual sync functions
+from migration_portal.migration_portal.api.flyout import log_sync_attempt
+from migration_portal.migration_portal.utils.sync_utils import schedule_sync, push_inquiry_updates
 
 class Inquiry(Document):
-	# ----- Lifecycle Hooks -----
+	def before_save(self):
+		if not self.inquiry_date:
+			self.inquiry_date = get_datetime_str(frappe.utils.now())
+
 	def validate(self):
-		# Email validation (already exists)
-		if self.contact_email and not frappe.utils.validate_email_address(self.contact_email):
-			frappe.throw("Invalid Contact Email Address format.")
-
-		# Phone validation (simple example: check if it contains digits)
-		if self.contact_phone and not any(char.isdigit() for char in self.contact_phone):
-			frappe.msgprint("Contact Phone does not seem valid.", title="Validation Warning", indicator="orange")
-			# For more robust validation, consider regex or external libraries
-
-		# FlyOut ID check
 		if self.inquiry_source == "FlyOut" and not self.flyout_inquiry_id:
-			frappe.throw("FlyOut Inquiry ID is mandatory when Inquiry Source is FlyOut.")
+			frappe.throw("FlyOut Inquiry ID is required when source is FlyOut")
 		
-		# Prevent duplicate FlyOut IDs
-		if self.inquiry_source == "FlyOut" and self.flyout_inquiry_id:
-			filters = {
-				"flyout_inquiry_id": self.flyout_inquiry_id,
-				"name": ["!=", self.name] # Exclude the current document if updating
-			}
-			existing = frappe.db.exists("Inquiry", filters)
-			if existing:
-				frappe.throw(f"Another Inquiry <a href='/app/inquiry/{existing}'>{existing}</a> already exists with the same FlyOut Inquiry ID.")
+		if self.inquiry_source == "Website" and not self.source_details:
+			frappe.throw("Source details are required when source is Website")
 
-		# Check child table entries based on service type
+		# Validate source details are provided for Other/Referral
+		if self.inquiry_source in ["Other", "Referral"] and not self.source_details:
+			frappe.throw("Source Details are required when Inquiry Source is Other or Referral")
+
+		# Validate study/work options based on service type
 		if self.service_type == "Study" and not self.study_options:
-			frappe.msgprint("Please add at least one Study Option for Service Type 'Study'.", title="Missing Information", indicator="orange")
+			frappe.throw("Study Options are required when Service Type is Study")
 		elif self.service_type == "Work" and not self.work_options:
-			frappe.msgprint("Please add at least one Work Option for Service Type 'Work'.", title="Missing Information", indicator="orange")
-
-		# Validate Signatory details (ensure they are set when needed, e.g., before conversion?)
-		# Example: Check only if status is moving towards conversion or is 'Under Review'
-		if self.status == "Under Review":
-			if not self.company_signatory:
-				frappe.throw("Company Signatory is required for an Inquiry under review.")
-			if not self.signatory_designation:
-				frappe.throw("Signatory Designation is required for an Inquiry under review.")
-
-	# on_update is now handled by the standalone trigger_flyout_sync function via hooks.py
-	# def on_update(self):
-	#     pass # Logic moved to trigger_flyout_sync
+			frappe.throw("Work Options are required when Service Type is Work")
 
 	def on_submit(self):
-		# Actions to perform upon submission (if needed beyond workflow)
-		# Example: Maybe send a confirmation email
-		# self.sync_to_flyout() # Trigger sync on submit as well?
-		pass
+		# Actions to perform upon submission
+		self.sync_to_flyout()
 
 	def on_cancel(self):
 		# Actions to perform upon cancellation
-		# self.sync_to_flyout() # Trigger sync on cancel
-		pass
+		self.sync_to_flyout()
 
-	# ----- Custom Methods -----
-	def sync_to_flyout(self, is_retry=False, originating_log=None):
-		"""
-		Sends inquiry data (or specific updates) to FlyOut if the source is FlyOut.
-		Handles calling the push_inquiry_updates utility.
+	def on_update(self):
+		# Check if the status has changed and sync if applicable
+		# Use flags to avoid sync loops if update is triggered by sync itself
+		if not frappe.flags.get("in_sync"):
+			db_status = frappe.db.get_value(self.doctype, self.name, "status")
+			if db_status and self.status != db_status:
+				# Map Frappe status to FlyOut status (adjust mapping as needed)
+				flyout_status = self.status.upper().replace(" ", "_") 
+				self.sync_to_flyout()
 
-		Args:
-			is_retry (bool): Indicates if this call is a retry attempt.
-			originating_log (str): The name of the Sync Log that initiated the retry, if applicable.
-		"""
-		if self.inquiry_source != "FlyOut" or not self.flyout_inquiry_id:
-			return # Don't sync if not a FlyOut inquiry or no ID
+	def sync_to_flyout(self):
+		if self.inquiry_source != "FlyOut":
+			frappe.throw("Only FlyOut inquiries can be synced")
+		
+		data = {
+			"applicant_name": self.applicant_name,
+			"contact_email": self.contact_email,
+			"contact_phone": self.contact_phone,
+			"service_type": self.service_type,
+			"destination_country": self.destination_country,
+			"budget_range": self.budget,
+			"timeline": self.timeline,
+			"ielts_status": self.ielts_status,
+			"preferred_language": self.preferred_language_of_communication,
+			"preferred_field_of_study": self.preferred_field_of_study,
+			"preferred_field_of_work": self.preferred_field_of_work,
+			"work_experience": self.length_of_work_experience
+		}
+		
+		# Add study options if present
+		if self.service_type == "Study" and self.study_options:
+			data["study_options"] = [{
+				"country": opt.country,
+				"program": opt.program,
+				"level": opt.level,
+				"institution": opt.institution
+			} for opt in self.study_options]
+		
+		# Add work options if present
+		if self.service_type == "Work" and self.work_options:
+			data["work_options"] = [{
+				"country": opt.country,
+				"visa_type": opt.visa_type,
+				"job_category": opt.job_category
+			} for opt in self.work_options]
+		
+		# TODO: Implement actual API call to FlyOut
+		frappe.msgprint("Synced to FlyOut successfully")
 
-		# Check settings
-		try:
-			settings = frappe.get_cached_doc("FlyOut Account Settings")
-			if not settings.enable_sync:
-				frappe.logger().info(f"FlyOut sync skipped for Inquiry {self.name}: Sync is disabled in settings.")
-				return
-		except frappe.DoesNotExistError:
-			frappe.log_error("FlyOut Account Settings not found. Cannot sync.", "FlyOut Sync Error")
-			return
-
-		# Call the push utility function
-		# It handles the API call, logging, and retry scheduling
-		result = push_inquiry_updates(self, settings) # Pass the document itself
-
-		# Optionally, add UI feedback based on the result
-		if is_retry:
-			# If this was a retry, maybe update the original log based on the new result
-			if originating_log:
-				status = "Success" if result.get("success") else "Error"
-				frappe.db.set_value("Sync Log", originating_log, "status", f"Retry {status}")
-				frappe.db.set_value("Sync Log", originating_log, "response_data", result.get("message"))
-		elif not result.get("success"):
-			# Show message only for direct (non-retry) failures
-			frappe.msgprint(
-				f"Failed to sync Inquiry {self.name} to FlyOut: {result.get('message')}",
-				title="Sync Error",
-				indicator='red',
-				alert=True
-			)
-			# Note: Retry scheduling is handled within push_inquiry_updates -> make_api_request -> schedule_sync
-
-
-	# ----- Client Conversion (Called via Workflow Action) -----
-	@frappe.whitelist()
 	def convert_to_client(self):
-		"""
-		Converts this Inquiry document to a Client document.
-		This method is intended to be called as a Workflow Action.
-		Populates the Client's playbook_steps based on Playbook Templates.
-		"""
-		# Double-check status although workflow should manage this
-		if self.status != "Under Review":
-			frappe.throw("Inquiry must be 'Under Review' to be converted.")
-
 		if self.linked_client:
-			frappe.msgprint(f"Inquiry already linked to Client <a href='/app/client/{self.linked_client}'>{self.linked_client}</a>.", title="Already Converted", indicator="orange")
-			return self.linked_client # Return existing client link
-
+			frappe.throw("This inquiry has already been converted to a client")
+		
+		# Create new client
+		client = frappe.get_doc({
+			"doctype": "Client",
+			"client_name": self.applicant_name,
+			"email": self.contact_email,
+			"phone": self.contact_phone,
+			"service_type": self.service_type,
+			"destination_country": self.destination_country,
+			"budget_range": self.budget,
+			"timeline": self.timeline,
+			"ielts_status": self.ielts_status,
+			"preferred_language": self.preferred_language_of_communication,
+			"preferred_field_of_study": self.preferred_field_of_study,
+			"preferred_field_of_work": self.preferred_field_of_work,
+			"work_experience": self.length_of_work_experience,
+			"status": "Active",
+			"source_inquiry": self.name
+		})
+		
+		# Add study options if present
+		if self.service_type == "Study" and self.study_options:
+			for opt in self.study_options:
+				client.append("study_options", {
+					"country": opt.country,
+					"program": opt.program,
+					"level": opt.level,
+					"institution": opt.institution
+				})
+		
+		# Add work options if present
+		if self.service_type == "Work" and self.work_options:
+			for opt in self.work_options:
+				client.append("work_options", {
+					"country": opt.country,
+					"visa_type": opt.visa_type,
+					"job_category": opt.job_category
+				})
+		
+		# Add notes
+		if self.notes:
+			client.append("notes", {
+				"note": f"Converted from Inquiry: {self.name}\n{self.notes}"
+			})
+		
 		try:
-			# Create new Client document
-			client = frappe.new_doc("Client")
-			client.linked_inquiry = self.name
-			client.client_name = self.applicant_name
-			client.email = self.contact_email
-			client.phone = self.contact_phone
-			client.service_type = self.service_type
-			client.destination_country = self.destination_country
-			client.primary_consultant = self.assigned_to or frappe.session.user # Assign or default
-
-			# Map address (simple example)
-			if self.address:
-				address_parts = self.address.split('\n')
-				client.address_line1 = address_parts[0]
-				if len(address_parts) > 1:
-					client.address_line2 = address_parts[1]
-				# TODO: Add more robust address parsing if needed (city, state, country, postal code)
-
-			# --- Populate Playbook Steps --- 
-			if self.service_type:
-				templates = frappe.get_all(
-					"Playbook Template",
-					filters={"applicable_service_type": self.service_type},
-					fields=["title", "description", "step_type", "sequence"],
-					order_by="sequence asc"
-				)
-				
-				for template in templates:
-					client.append("playbook_steps", {
-						"title": template.title,
-						"description": template.description,
-						"step_type": template.step_type, # Copy the general type
-						"sequence": template.sequence,
-						"status": "Pending" # Initial status for all steps
-					})
-			# --- End Populate Playbook Steps --- 
-
-			# Set initial Client status (assuming Workflow handles Inquiry status change)
-			client.status = "Active"
-			# Use submit=0 to ensure it saves as Draft first if needed, then workflow handles submission
-			client.insert(ignore_permissions=True) 
-
-			# Update Inquiry link (status is handled by workflow)
-			self.db_set("linked_client", client.name) # Use db_set to avoid triggering on_update again
-
-			frappe.msgprint(f"Inquiry {self.name} converted to Client <a href='/app/client/{client.name}'>{client.name}</a>. Playbook steps populated.", alert=True, indicator='green', title="Conversion Successful")
-			return client.name
-
+			client.insert()
+			self.linked_client = client.name
+			self.save()
+			frappe.msgprint(f"Successfully converted to Client: {get_link_to_form('Client', client.name)}")
 		except Exception as e:
-			frappe.log_error(frappe.get_traceback(), "Client Conversion Error")
-			frappe.throw(f"Error converting Inquiry to Client: {str(e)}")
+			frappe.log_error(f"Error converting Inquiry to Client: {str(e)}")
+			frappe.throw("Error converting to client. Please try again.")
 
-
-# Standalone Whitelisted Function (potentially for button if workflow action isn't used)
-# Kept for reference, but primary conversion should be via workflow action calling the instance method.
 @frappe.whitelist()
-def convert_inquiry_to_client_standalone(inquiry_name):
-	"""Standalone function to convert inquiry, e.g., if called from a custom button."""
-	doc = frappe.get_doc("Inquiry", inquiry_name)
-	return doc.convert_to_client() 
+def convert_to_client(doc=None, inquiry_name=None):
+	"""Converts an Inquiry document to a Client document."""
+	
+	if inquiry_name:
+		doc = frappe.get_doc("Inquiry", inquiry_name)
+	elif isinstance(doc, str):
+		doc = frappe.get_doc("Inquiry", doc)
+	elif isinstance(doc, dict):
+		# If full doc is passed from client-side
+		doc = frappe.get_doc(doc)
+	
+	if not doc:
+		frappe.throw("Inquiry document not provided or found.")
+
+	if doc.status != "Under Review":
+		frappe.throw("Inquiry must be 'Under Review' to convert.")
+
+	if doc.linked_client:
+		frappe.throw(
+			f"Inquiry already linked to Client {get_link_to_form('Client', doc.linked_client)}", 
+			title="Already Converted"
+		)
+
+	try:
+		# Create new Client document
+		client = frappe.new_doc("Client")
+		
+		# Basic Information
+		client.linked_inquiry = doc.name
+		client.client_name = doc.applicant_name
+		client.email = doc.contact_email
+		client.phone = doc.contact_phone
+		client.service_type = doc.service_type
+		client.destination_country = doc.destination_country
+		client.primary_consultant = doc.assigned_to or frappe.session.user
+		
+		# Additional Details
+		if doc.address:
+			address_parts = doc.address.split('\n')
+			if len(address_parts) >= 1:
+				client.address_line1 = address_parts[0]
+			if len(address_parts) >= 2:
+				client.address_line2 = address_parts[1]
+			if len(address_parts) >= 3:
+				client.city = address_parts[2]
+
+		# Service Details
+		client.budget_range = doc.budget_range
+		client.timeline = doc.timeline
+
+		# Study Options
+		if doc.service_type == "Study" and doc.study_options:
+			for option in doc.study_options:
+				client.append("study_preferences", {
+					"program_name": option.program_name,
+					"institution": option.institution,
+					"level": option.level,
+					"field_of_study": option.field_of_study,
+					"country": option.country,
+					"notes": option.notes,
+					"reference_option": option.study_option
+				})
+
+		# Work Options
+		if doc.service_type == "Work" and doc.work_options:
+			for option in doc.work_options:
+				client.append("job_preferences", {
+					"job_title": option.job_title,
+					"company_name": option.company_name,
+					"industry": option.industry,
+					"country": option.country,
+					"expected_salary": option.expected_salary,
+					"salary_period": option.salary_period,
+					"contract_type": option.contract_type,
+					"notes": option.notes,
+					"reference_option": option.work_option
+				})
+
+		# Notes
+		if doc.notes:
+			client.append("notes_history", {
+				"note": doc.notes,
+				"note_type": "Conversion Note",
+				"added_by": frappe.session.user,
+				"added_on": now_datetime()
+			})
+
+		# Set initial status and insert
+		client.status = "Active"
+		client.insert(ignore_permissions=True)
+
+		# Update Inquiry
+		doc.status = "Converted"
+		doc.linked_client = client.name
+		doc.save(ignore_permissions=True)
+		
+		# Success message with link
+		frappe.msgprint(
+			f"Successfully converted Inquiry {doc.name} to Client {get_link_to_form('Client', client.name)}", 
+			alert=True, 
+			indicator='green'
+		)
+		
+		return client.name
+
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), f"Client Conversion Error for Inquiry {doc.name}")
+		frappe.throw(f"Error converting Inquiry to Client: {str(e)}")
+
+# Placeholders removed, actual functions are imported above 

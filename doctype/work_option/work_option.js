@@ -1,9 +1,9 @@
+// Copyright (c) 2024, RavanOS and contributors
+// For license information, please see license.txt
+
 frappe.ui.form.on("Work Option", {
-	refresh: function(frm) {
-		// Add client-side logic if needed
+	refresh(frm) {
+		// Client-side logic for Work Option form
+		// (Add fields like job title, company, location, requirements etc. in JSON)
 	},
-	// Example: Add dynamic filters if Job Category is created
-	// job_category: function(frm) {
-	// 	// Logic to filter jobs based on category, perhaps?
-	// }
 }); 
